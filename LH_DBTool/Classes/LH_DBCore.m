@@ -6,9 +6,9 @@
 //
 
 #import "LH_DBCore.h"
-#import "FMDB.h"
 #import "LH_DBObjectProtocol.h"
-#import "YYModel.h"
+#import <fmdb/FMDB.h>
+#import <YYModel/YYModel.h>
 
 static NSString *const LH_DBModelColumnName = @"LH_ModelColumn";
 static NSString *const LH_DBModelColumnType = @"blob";

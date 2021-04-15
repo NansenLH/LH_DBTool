@@ -18,6 +18,7 @@
     "ios": "10.0"
   },
   "source_files": "LH_DBTool/Classes/**/*",
+  "module_name": "LH_DBTool",
   "frameworks": "UIKit",
   "dependencies": {
     "FMDB": [

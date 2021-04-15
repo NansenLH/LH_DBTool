@@ -17,7 +17,11 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '10.0'
   s.source_files = 'LH_DBTool/Classes/**/*'
+  s.module_name = 'LH_DBTool'
+
   s.frameworks = 'UIKit'
+
   s.dependency 'FMDB'
   s.dependency 'YYModel'
+
 end

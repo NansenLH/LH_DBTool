@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "LH_DBObjectProtocol.h"
-#import "YYModel.h"
+#import <YYModel/YYModel.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -7,8 +7,8 @@
 
 #import "LH_DBTool.h"
 #import "LH_DBCore.h"
-#import "FMDB.h"
-#import "YYModel.h"
+#import <fmdb/FMDB.h>
+#import <YYModel/YYModel.h>
 
 @interface LH_DBTool ()
 
@@ -150,20 +150,19 @@
 - (NSArray *)getObjectsWithClass:(Class)clazz
                        condition:(NSDictionary<NSString *, NSString *> *)condition
 {
-    NSObject *obj = [[clazz alloc] init];
+    NSObject<LH_DBObjectProtocol> *obj = [[clazz alloc] init];
     if ([obj respondsToSelector:@selector(LH_Primarykey)] == NO) {
         NSLog(@"Warning: 条件查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
         return @[];
     }
-    NSObject<LH_DBObjectProtocol> *dbObj = (NSObject<LH_DBObjectProtocol> *)obj;
     
-    [self.database tableCheck:dbObj];
+    [self.database tableCheck:obj];
     
     NSMutableArray *availableProperties = [NSMutableArray array];
-    [availableProperties addObjectsFromArray:[dbObj LH_Primarykey]];
+    [availableProperties addObjectsFromArray:[obj LH_Primarykey]];
     
-    if ([dbObj respondsToSelector:@selector(LH_SearchKey)]) {
-        [availableProperties addObjectsFromArray:[dbObj LH_SearchKey]];
+    if ([obj respondsToSelector:@selector(LH_SearchKey)]) {
+        [availableProperties addObjectsFromArray:[obj LH_SearchKey]];
     }
     
     BOOL isOkey = YES;
@@ -186,13 +185,12 @@
 /// @param clazz 遵循<LH_DBObjectProtocol, YYModel>的类
 - (NSArray *)getAllObjectsWithClass:(Class)clazz
 {
-    NSObject *obj = [[clazz alloc] init];
+    NSObject<LH_DBObjectProtocol> *obj = [[clazz alloc] init];
     if ([obj respondsToSelector:@selector(LH_Primarykey)] == NO) {
         NSLog(@"Warning: 全部查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
         return @[];
     }
-    NSObject<LH_DBObjectProtocol> *dbObj = (NSObject<LH_DBObjectProtocol> *)obj;
-    [self.database tableCheck:dbObj];
+    [self.database tableCheck:obj];
     
     NSString *tableName = NSStringFromClass(clazz);
     NSString *sql = [NSString stringWithFormat:@"select * from %s", [tableName UTF8String]];
