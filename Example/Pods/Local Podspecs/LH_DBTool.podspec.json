@@ -1,0 +1,30 @@
+{
+  "name": "LH_DBTool",
+  "version": "0.1.0",
+  "summary": "基于 FMDB 封装的数据库",
+  "homepage": "https://github.com/NansenLH/LH_DBTool",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "NansenLH": "nansen_lu@163.com"
+  },
+  "source": {
+    "git": "https://github.com/NansenLH/LH_DBTool.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "10.0"
+  },
+  "source_files": "LH_DBTool/Classes/**/*",
+  "frameworks": "UIKit",
+  "dependencies": {
+    "FMDB": [
+
+    ],
+    "YYModel": [
+
+    ]
+  }
+}

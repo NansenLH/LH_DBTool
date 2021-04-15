@@ -1,0 +1,6 @@
+framework module LH_DBTool {
+  umbrella header "LH_DBTool-umbrella.h"
+
+  export *
+  module * { export * }
+}
