@@ -20,9 +20,9 @@ it, simply add the following line to your Podfile:
 pod 'LH_DBTool'
 ```
 
-## Author
 
-NansenLH, nansen_lu@163.com
+
+
 
 ## License
 
