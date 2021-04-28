@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'LH_DBTool'
-  s.version          = '2'
+  s.version          = '3'
   s.summary          = '基于 FMDB 封装的数据库'
   s.homepage         = 'https://github.com/NansenLH/LH_DBTool'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
