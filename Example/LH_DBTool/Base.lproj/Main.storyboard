@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="whP-gf-Uak">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="whP-gf-Uak">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -20,7 +18,71 @@
                     <view key="view" contentMode="scaleToFill" id="TpU-gO-2f1">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="1Fm-Yt-CzR">
+                                <rect key="frame" x="16" y="64" width="343" height="100"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dED-cJ-idY">
+                                        <rect key="frame" x="0.0" y="35" width="60" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="bSJ-66-tg3"/>
+                                            <constraint firstAttribute="width" constant="60" id="tes-pl-FIl"/>
+                                        </constraints>
+                                        <state key="normal" title="Add"/>
+                                        <connections>
+                                            <action selector="addAction:" destination="whP-gf-Uak" eventType="touchUpInside" id="7tx-bX-4CZ"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pbf-K5-p3H">
+                                        <rect key="frame" x="94.5" y="35" width="60" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="OWM-Bu-rdm"/>
+                                            <constraint firstAttribute="width" constant="60" id="n8K-qq-HM3"/>
+                                        </constraints>
+                                        <state key="normal" title="Remove"/>
+                                        <connections>
+                                            <action selector="removeAction:" destination="whP-gf-Uak" eventType="touchUpInside" id="rVC-UD-GJy"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ecF-7B-UH8">
+                                        <rect key="frame" x="188.5" y="35" width="60" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="CM4-yv-E3M"/>
+                                            <constraint firstAttribute="width" constant="60" id="YhI-Gc-u00"/>
+                                        </constraints>
+                                        <state key="normal" title="Change"/>
+                                        <connections>
+                                            <action selector="changeAction:" destination="whP-gf-Uak" eventType="touchUpInside" id="Ci0-QL-R9G"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1zr-VY-esD">
+                                        <rect key="frame" x="283" y="35" width="60" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="1S6-Uc-28T"/>
+                                            <constraint firstAttribute="width" constant="60" id="5fx-tf-WlF"/>
+                                        </constraints>
+                                        <state key="normal" title="Search"/>
+                                        <connections>
+                                            <action selector="searchAction:" destination="whP-gf-Uak" eventType="touchUpInside" id="cWH-aV-CJp"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="pbf-K5-p3H" firstAttribute="centerY" secondItem="1Fm-Yt-CzR" secondAttribute="centerY" id="5L6-2f-YVv"/>
+                                    <constraint firstItem="1zr-VY-esD" firstAttribute="centerY" secondItem="1Fm-Yt-CzR" secondAttribute="centerY" id="JTo-Tt-uX8"/>
+                                    <constraint firstAttribute="height" constant="100" id="ULf-hl-MTg"/>
+                                    <constraint firstItem="dED-cJ-idY" firstAttribute="centerY" secondItem="1Fm-Yt-CzR" secondAttribute="centerY" id="eGs-V1-sEh"/>
+                                    <constraint firstItem="ecF-7B-UH8" firstAttribute="centerY" secondItem="1Fm-Yt-CzR" secondAttribute="centerY" id="wSA-x0-H8Y"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="1Fm-Yt-CzR" firstAttribute="leading" secondItem="TpU-gO-2f1" secondAttribute="leadingMargin" id="J87-uc-gUg"/>
+                            <constraint firstItem="1Fm-Yt-CzR" firstAttribute="top" secondItem="uEw-UM-LJ8" secondAttribute="bottom" constant="64" id="Tg0-hb-Wqn"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="1Fm-Yt-CzR" secondAttribute="trailing" id="tWZ-8P-J6l"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tc2-Qw-aMS" userLabel="First Responder" sceneMemberID="firstResponder"/>

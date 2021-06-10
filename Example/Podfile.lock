@@ -2,7 +2,7 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
-  - LH_DBTool (0.1.0):
+  - LH_DBTool (3):
     - FMDB
     - YYModel
   - YYModel (1.0.4)
@@ -21,7 +21,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  LH_DBTool: c547817d17f71c3bc307fc970320195de431614a
+  LH_DBTool: 816c0dbac860cfd8a458ace796e9b57c6542f396
   YYModel: 2a7fdd96aaa4b86a824e26d0c517de8928c04b30
 
 PODFILE CHECKSUM: 13481633a0d529df71a46944b0897a22157c6976

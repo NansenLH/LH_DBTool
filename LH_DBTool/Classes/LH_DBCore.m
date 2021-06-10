@@ -78,7 +78,7 @@ static NSString *const LH_DBModelColumnType = @"blob";
 
 
 #pragma mark - table check
-- (void)tableCheck:(id<LH_DBObjectProtocol, YYModel>)data_obj
+- (void)tableCheck:(id<LH_DBObjectProtocol>)data_obj
 {
     NSString* tableName = NSStringFromClass([data_obj class]);
     Class objClass = [data_obj class];
@@ -100,6 +100,9 @@ static NSString *const LH_DBModelColumnType = @"blob";
         [rs close];
     }];
 }
+
+
+
 
 #pragma mark - table Create Method
 - (void)createTable:(FMDatabase *)db
@@ -178,7 +181,7 @@ static NSString *const LH_DBModelColumnType = @"blob";
 
 
 #pragma mark - insert record Method
-- (NSString *)getInsertRecordQuery:(id<LH_DBObjectProtocol, YYModel>)dataObject
+- (NSString *)getInsertRecordQuery:(id<LH_DBObjectProtocol>)dataObject
 {
     NSString *table_name = NSStringFromClass([dataObject class]);
     NSObject *data_obj = dataObject;
@@ -254,7 +257,7 @@ static NSString *const LH_DBModelColumnType = @"blob";
 
 
 
-- (NSString *)formatDeleteSQLWithObjc:(id<LH_DBObjectProtocol, YYModel>)data_obj
+- (NSString *)formatDeleteSQLWithObjc:(id<LH_DBObjectProtocol>)data_obj
 {
     NSMutableString *query = nil;
     
@@ -274,7 +277,7 @@ static NSString *const LH_DBModelColumnType = @"blob";
     return query;
 }
 
-- (NSString *)formatMutableConditionSQLWithObjc:(id<LH_DBObjectProtocol, YYModel>)data_obj pkArr:(NSArray *)pkArr
+- (NSString *)formatMutableConditionSQLWithObjc:(id<LH_DBObjectProtocol>)data_obj pkArr:(NSArray *)pkArr
 {
     NSMutableString *condition = [[NSMutableString alloc] init];
     NSObject *OBJECT = data_obj;
@@ -297,7 +300,7 @@ static NSString *const LH_DBModelColumnType = @"blob";
     return condition;
 }
 
-- (NSString *)formatSingleConditionSQLWithObjc:(id<LH_DBObjectProtocol, YYModel>)data_obj property_name:(NSString *)property_name
+- (NSString *)formatSingleConditionSQLWithObjc:(id<LH_DBObjectProtocol>)data_obj property_name:(NSString *)property_name
 {
     NSObject *OBJECT = data_obj;
     NSString* condition = nil;
@@ -324,7 +327,7 @@ static NSString *const LH_DBModelColumnType = @"blob";
 #pragma mark - help Method
 /// condition -> string
 - (NSString *)formatCondition:(NSDictionary<NSString *, NSString *> *)condition
-                    WithClass:(Class<LH_DBObjectProtocol, YYModel>)clazz
+                    WithClass:(Class<LH_DBObjectProtocol>)clazz
 {
     NSString *tableName = NSStringFromClass(clazz);
     NSMutableString *sql = [NSMutableString stringWithFormat:@"select * from %s", [tableName UTF8String]];

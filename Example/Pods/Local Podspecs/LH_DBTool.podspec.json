@@ -1,6 +1,6 @@
 {
   "name": "LH_DBTool",
-  "version": "0.1.0",
+  "version": "3",
   "summary": "基于 FMDB 封装的数据库",
   "homepage": "https://github.com/NansenLH/LH_DBTool",
   "license": {
@@ -12,7 +12,7 @@
   },
   "source": {
     "git": "https://github.com/NansenLH/LH_DBTool.git",
-    "tag": "0.1.0"
+    "tag": "3"
   },
   "platforms": {
     "ios": "10.0"

@@ -7,7 +7,6 @@
 
 #import <Foundation/Foundation.h>
 #import "LH_DBObjectProtocol.h"
-#import <YYModel/YYModel.h>
 
 @class FMDatabaseQueue, FMDatabase;
 
@@ -22,20 +21,20 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDBPath:(NSString*)dbPath;
 
 #pragma mark - table check
-- (void)tableCheck:(id<LH_DBObjectProtocol, YYModel>)dataObject;
+- (void)tableCheck:(id<LH_DBObjectProtocol>)dataObject;
 
 #pragma mark - insert record Method
-- (NSString *)getInsertRecordQuery:(id<LH_DBObjectProtocol, YYModel>)dataObject;
+- (NSString *)getInsertRecordQuery:(id<LH_DBObjectProtocol>)dataObject;
 
 #pragma mark - excuteSql Method
 - (NSArray*)excuteSql:(NSString*)sql withClass:(Class)clazz;
 
 #pragma mark - SQL format Method
-- (NSString *)formatDeleteSQLWithObjc:(id<LH_DBObjectProtocol, YYModel>)data_obj;
+- (NSString *)formatDeleteSQLWithObjc:(id<LH_DBObjectProtocol>)data_obj;
 
 #pragma mark - help Method
 - (NSString *)formatCondition:(NSDictionary<NSString *, NSString *> *)condition
-                    WithClass:(Class<LH_DBObjectProtocol, YYModel>)clazz;
+                    WithClass:(Class<LH_DBObjectProtocol>)clazz;
 
 @end
 

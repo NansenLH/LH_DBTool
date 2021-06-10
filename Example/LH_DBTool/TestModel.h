@@ -7,11 +7,14 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
-#import <YYModel/YYModel.h>
 #import <LH_DBTool/LH_DBTool.h>
 
 NS_ASSUME_NONNULL_BEGIN
+
+UIKIT_EXTERN NSString * const TestModel_Key_Name;
+UIKIT_EXTERN NSString * const TestModel_Key_Page;
+
+UIKIT_EXTERN NSString * const TestModel_SearchKey_Count;
 
 @interface TestSubModel : NSObject
 
@@ -27,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface TestModel : NSObject<LH_DBObjectProtocol, YYModel>
+@interface TestModel : NSObject<LH_DBObjectProtocol>
 
 @property (nonatomic, copy) NSString *name;
 
