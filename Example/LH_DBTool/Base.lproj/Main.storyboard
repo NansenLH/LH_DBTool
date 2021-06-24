@@ -76,12 +76,25 @@
                                     <constraint firstItem="ecF-7B-UH8" firstAttribute="centerY" secondItem="1Fm-Yt-CzR" secondAttribute="centerY" id="wSA-x0-H8Y"/>
                                 </constraints>
                             </stackView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="yn5-zQ-VMJ">
+                                <rect key="frame" x="95" y="33" width="185" height="32"/>
+                                <segments>
+                                    <segment title="testDB"/>
+                                    <segment title="abc"/>
+                                    <segment title="ttt"/>
+                                </segments>
+                                <connections>
+                                    <action selector="segmentChanged:" destination="whP-gf-Uak" eventType="valueChanged" id="NzJ-gK-r7V"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="yn5-zQ-VMJ" firstAttribute="centerX" secondItem="TpU-gO-2f1" secondAttribute="centerX" id="2f4-am-UME"/>
                             <constraint firstItem="1Fm-Yt-CzR" firstAttribute="leading" secondItem="TpU-gO-2f1" secondAttribute="leadingMargin" id="J87-uc-gUg"/>
                             <constraint firstItem="1Fm-Yt-CzR" firstAttribute="top" secondItem="uEw-UM-LJ8" secondAttribute="bottom" constant="64" id="Tg0-hb-Wqn"/>
                             <constraint firstAttribute="trailingMargin" secondItem="1Fm-Yt-CzR" secondAttribute="trailing" id="tWZ-8P-J6l"/>
+                            <constraint firstItem="1Fm-Yt-CzR" firstAttribute="top" secondItem="yn5-zQ-VMJ" secondAttribute="bottom" id="wkr-Oz-e0y"/>
                         </constraints>
                     </view>
                 </viewController>
