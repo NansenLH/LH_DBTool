@@ -9,34 +9,40 @@
 #import "LH_ViewController.h"
 #import "TestModel.h"
 
+static NSString *const DBName1 = @"111";
+static NSString *const DBName2 = @"222";
 
 @interface LH_ViewController ()
 <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
 
-@property (nonatomic, strong) NSMutableArray *testDBArray;
-
-@property (nonatomic, strong) NSMutableArray *abcDBArray;
-
-@property (nonatomic, strong) NSMutableArray *tttDBArray;
+@property (nonatomic, strong) NSMutableArray<TestModel *> *dataArray;
 
 @property (nonatomic, assign) NSInteger segIndex;
+@property (nonatomic, copy) NSString *dbName;
 
 @end
 
 @implementation LH_ViewController
 
+- (NSMutableArray *)dataArray
+{
+    if (!_dataArray) {
+        _dataArray = [NSMutableArray array];
+    }
+    return _dataArray;
+}
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.segIndex = 0;
+    self.dbName = @"LHDB";
     
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSLog(@"docDir = %@", docDir);
     [[LH_DBTool defaultTool] startInDBPath:docDir];
-    
-    [[LH_DBTool defaultTool] startInDBPath:docDir dbName:@"testDB"];
     
     [self.view addSubview:self.tableView];
 }
@@ -45,45 +51,33 @@
         
     self.segIndex = sender.selectedSegmentIndex;
     
-    self.testDBArray = nil;
-    [self.testDBArray count];
-    self.abcDBArray = nil;
-    [self.abcDBArray count];
-    self.tttDBArray = nil;
-    [self.tttDBArray count];
+    [self.dataArray removeAllObjects];
+    if (self.segIndex == 0) {
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchAllObjectsFromClass:[TestModel class]]];
+    }
+    else if (self.segIndex == 1) {
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:DBName1]];
+    }
+    else {
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:DBName2]];
+    }
     
     [self.tableView reloadData];
 }
 
-
-
-- (NSMutableArray *)abcDBArray
+- (void)setSegIndex:(NSInteger)segIndex
 {
-    if (!_abcDBArray) {
-        _abcDBArray = [NSMutableArray array];
-        
-        [_abcDBArray addObjectsFromArray:[[LH_DBTool defaultTool] getAllObjectsWithClass:[TestModel class] fromDBName:@"abc"]];
+    _segIndex = segIndex;
+    
+    if (segIndex == 0) {
+        self.dbName = @"LHDB";
     }
-    return _abcDBArray;
-}
-
-- (NSMutableArray *)testDBArray
-{
-    if (!_testDBArray) {
-        _testDBArray = [NSMutableArray array];
-        [_testDBArray addObjectsFromArray:[[LH_DBTool defaultTool] getAllObjectsWithClass:[TestModel class]]];
+    else if (segIndex == 1) {
+        self.dbName = DBName1;
     }
-    return _testDBArray;
-}
-
-- (NSMutableArray *)tttDBArray
-{
-    if (!_tttDBArray) {
-        _tttDBArray = [NSMutableArray array];
-        
-        [_tttDBArray addObjectsFromArray:[[LH_DBTool defaultTool] getAllObjectsWithClass:[TestModel class] fromDBName:@"ttt"]];
+    else {
+        self.dbName = DBName2;
     }
-    return _tttDBArray;
 }
 
 
@@ -118,15 +112,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (self.segIndex == 0) {
-        return self.testDBArray.count;
-    }
-    else if (self.segIndex == 1) {
-        return self.abcDBArray.count;
-    }
-    else {
-        return self.tttDBArray.count;
-    }
+    return self.dataArray.count;
 }
 
 #pragma mark ---- Cell ----
@@ -140,17 +126,7 @@
     }
     
     
-    TestModel *m = nil;
-    if (self.segIndex == 0) {
-        m = self.testDBArray[indexPath.row];
-    }
-    else if (self.segIndex == 1) {
-        m = self.abcDBArray[indexPath.row];
-    }
-    else {
-        m = self.tttDBArray[indexPath.row];
-    }
-    
+    TestModel *m = self.dataArray[indexPath.row];
     cell.textLabel.text = [NSString stringWithFormat:@"%@; %zd; %d", m.name, m.page, m.count];
     
     return cell;
@@ -164,107 +140,88 @@
 
 - (IBAction)addAction:(id)sender
 {
-    NSString *name = @"testDB";
-    NSMutableArray *currentArray = self.testDBArray;
-    
-    if (self.segIndex == 1) {
-        name = @"abc";
-        currentArray = self.abcDBArray;
-    }
-    else if (self.segIndex == 2) {
-        name = @"ttt";
-        currentArray = self.tttDBArray;
-    }
-    
-    [currentArray removeAllObjects];
-    
     NSMutableArray *arr = [NSMutableArray array];
     for (int i = 0; i < 10; i++) {
         TestModel *m1 = [[TestModel alloc] init];
-        m1.name = [NSString stringWithFormat:@"%@ - %d", name, i];
+        m1.name = [NSString stringWithFormat:@"%@ - %d", self.dbName, i];
         m1.page = i;
         m1.count = 200;
         [arr addObject:m1];
     }
-
-    [[LH_DBTool defaultTool] addObjectsInTransaction:arr inDBName:name];
-    [currentArray addObjectsFromArray:[[LH_DBTool defaultTool] getAllObjectsWithClass:[TestModel class] fromDBName:name]];
+    
+    [self.dataArray removeAllObjects];
+    if (self.segIndex == 0) {
+        [[LH_DBTool defaultTool] defaultAddObjectArray:arr];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchAllObjectsFromClass:[TestModel class]]];
+    }
+    else if (self.segIndex == 1) {
+        [[LH_DBTool defaultTool] addObjectArray:arr inDBName:self.dbName];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:self.dbName]];
+    }
+    else {
+        [[LH_DBTool defaultTool] addObjectArray:arr inDBName:self.dbName];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:self.dbName]];
+    }
+    
     [self.tableView reloadData];
 }
 
-- (IBAction)removeAction:(id)sender {
-    
-    NSString *name = @"testDB";
-    NSMutableArray *currentArray = self.testDBArray;
-    
-    if (self.segIndex == 1) {
-        name = @"abc";
-        currentArray = self.abcDBArray;
-    }
-    else if (self.segIndex == 2) {
-        name = @"ttt";
-        currentArray = self.tttDBArray;
-    }
-    
-    
+- (IBAction)removeAction:(id)sender
+{
     NSMutableArray *arr = [NSMutableArray array];
     for (int i = 0; i < 5; i++) {
         TestModel *m1 = [[TestModel alloc] init];
-        m1.name = [NSString stringWithFormat:@"%@ - %d", name, i];
+        m1.name = [NSString stringWithFormat:@"%@ - %d", self.dbName, i];
         m1.page = i;
         m1.count = i+100;
         [arr addObject:m1];
     }
     
-    [[LH_DBTool defaultTool] deleteObjects:arr fromDBName:name];
+    if (self.segIndex == 0) {
+        [[LH_DBTool defaultTool] defaultDeleteObjectArray:arr];
+        [self.dataArray removeAllObjects];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchAllObjectsFromClass:[TestModel class]]];
+    }
+    else {
+        [[LH_DBTool defaultTool] deleteObjectArray:arr inDBName:self.dbName];
+        [self.dataArray removeAllObjects];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:self.dbName]];
+    }
     
-    [currentArray removeAllObjects];
-    [currentArray addObjectsFromArray:[[LH_DBTool defaultTool] getAllObjectsWithClass:[TestModel class]]];
     [self.tableView reloadData];
 }
 
-- (IBAction)changeAction:(id)sender {
-    
-    NSString *name = @"testDB";
-    NSMutableArray *currentArray = self.testDBArray;
-    
-    if (self.segIndex == 1) {
-        name = @"abc";
-        currentArray = self.abcDBArray;
-    }
-    else if (self.segIndex == 2) {
-        name = @"ttt";
-        currentArray = self.tttDBArray;
-    }
-    
+- (IBAction)changeAction:(id)sender
+{
     TestModel *m1 = [[TestModel alloc] init];
-    m1.name = [NSString stringWithFormat:@"%@ - %d", name, 6];
+    m1.name = [NSString stringWithFormat:@"%@ - %d", self.dbName, 6];
     m1.page = 6;
     m1.count = 666;
     
-    [[LH_DBTool defaultTool] addObject:m1 inDBName:name];
+    if (self.segIndex == 0) {
+        [[LH_DBTool defaultTool] defaultAddObject:m1];
+        [self.dataArray removeAllObjects];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchAllObjectsFromClass:[TestModel class]]];
+    }
+    else {
+        [[LH_DBTool defaultTool] addObject:m1 inDBName:self.dbName];
+        [self.dataArray removeAllObjects];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:self.dbName]];
+    }
     
-    [currentArray removeAllObjects];
-    [currentArray addObjectsFromArray:[[LH_DBTool defaultTool] getAllObjectsWithClass:[TestModel class] fromDBName:name]];
     [self.tableView reloadData];
 }
 
-- (IBAction)searchAction:(id)sender {
-    
-    NSString *name = @"testDB";
-    NSMutableArray *currentArray = self.testDBArray;
-    
-    if (self.segIndex == 1) {
-        name = @"abc";
-        currentArray = self.abcDBArray;
+- (IBAction)searchAction:(id)sender
+{
+    [self.dataArray removeAllObjects];
+    if (self.segIndex == 0) {
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchObjectsFromClass:[TestModel class] conditionKey:TestModel_SearchKey_Count conditionValue:@"200"]];
     }
-    else if (self.segIndex == 2) {
-        name = @"ttt";
-        currentArray = self.tttDBArray;
+    else {
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchObjectsFromClass:[TestModel class] conditionKey:TestModel_SearchKey_Count conditionValue:@"200" inDBName:self.dbName]];
     }
     
-    [currentArray removeAllObjects];
-    [currentArray addObjectsFromArray:[[LH_DBTool defaultTool] getObjectsWithClass:[TestModel class] conditionKey:TestModel_SearchKey_Count conditionValue:@"200" fromDBName:name]];
     [self.tableView reloadData];
 }
 

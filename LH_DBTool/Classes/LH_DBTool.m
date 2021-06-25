@@ -13,10 +13,9 @@
 @interface LH_DBTool ()
 
 @property (nonatomic, copy) NSString *dbPath;
-
-@property (nonatomic, strong) LH_DBCore *defaultCore;
-
 @property (nonatomic, strong) NSMutableDictionary<NSString *, LH_DBCore *> *dbDict;
+
+@property (nonatomic, strong, nullable) LH_DBCore *defaultCore;
 
 @end
 
@@ -197,8 +196,22 @@
     return tf;
 }
 
-
-
+- (LH_DBCore * _Nullable)getDBCoreByDBName:(NSString *)dbName
+{
+    if (self.dbPath == nil) {
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+        return nil;
+    }
+    
+    LH_DBCore *dbCore = [self.dbDict objectForKey:dbName];
+    if (dbCore == nil) {
+        NSString *name = [NSString stringWithFormat:@"%@.db", dbName];
+        NSString *dbFilePath = [self.dbPath stringByAppendingPathComponent:name];
+        dbCore = [[LH_DBCore alloc] initWithDBPath:dbFilePath];
+        [self.dbDict setObject:dbCore forKey:dbName];
+    }
+    return dbCore;
+}
 
 
 + (LH_DBTool *)defaultTool
@@ -226,35 +239,48 @@
     return [LH_DBTool defaultTool];
 }
 
-#pragma mark ---- 指定路径,存储的时候指定数据库文件名 ----
-/// 数据库存储的路径
+
+/// 开启数据库,指定文件存储的沙盒路径
 - (void)startInDBPath:(NSString *)dbPath
 {
+    if (self.dbPath && [self.dbPath isEqualToString:dbPath]) {
+        
+        if ([self.dbPath isEqualToString:dbPath]) {
+            return;
+        }
+        else {
+            self.dbPath = nil;
+            [self.dbDict removeAllObjects];
+        }
+    }
+    
     self.dbPath = dbPath;
+    
+    NSLog(@"LH_DBTool startInDBPath:%@", dbPath);
     
     NSFileManager *fm = [NSFileManager defaultManager];
     if ([fm fileExistsAtPath:dbPath] == NO) {
         [fm createDirectoryAtPath:dbPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
-}
-
-- (LH_DBCore * _Nullable)getDBCoreByDBName:(NSString *)dbName
-{
-    if (self.dbPath == nil) {
-        return nil;
-    }
     
-    LH_DBCore *dbCore = [self.dbDict objectForKey:dbName];
-    if (dbCore == nil) {
-        NSString *name = [NSString stringWithFormat:@"%@.db", dbName];
-        NSString *dbFilePath = [self.dbPath stringByAppendingPathComponent:name];
-        dbCore = [[LH_DBCore alloc] initWithDBPath:dbFilePath];
-        [self.dbDict setObject:dbCore forKey:dbName];
-    }
-    return dbCore;
+    NSString *db = [self.dbPath stringByAppendingPathComponent:@"LHDB.db"];
+    self.defaultCore = [[LH_DBCore alloc] initWithDBPath:db];
 }
 
 
+/// 停止数据库的工作. 调用该方法后,所有的增删改查都无效.
+- (void)stopDB
+{
+    NSLog(@"LH_DBTool stopDB");
+    self.dbPath = nil;
+    [self.dbDict removeAllObjects];
+    
+    self.defaultCore = nil;
+}
+
+
+
+#pragma mark - ======== 存储的时候指定数据库文件名 ========
 #pragma mark ---- 增,删,改,查 ----
 /// 往数据库中增加或者更新一条数据
 /// @param obj 遵循<LH_DBObjectProtocol>的对象
@@ -264,7 +290,6 @@
 {
     LH_DBCore *dbCore = [self getDBCoreByDBName:dbName];
     if (dbCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 start... 方法");
         return NO;
     }
     
@@ -273,12 +298,12 @@
 
 /// 往数据库中增加或者更新一组数据
 /// @param objs 遵循<LH_DBObjectProtocol>的一组对象
-- (BOOL)addObjectsInTransaction:(NSArray<id<LH_DBObjectProtocol>> *)objs
-                       inDBName:(NSString *)dbName
+/// @param dbName 数据库文件名,不用加后缀. 会用该文件名创建 dbName.db 的数据库文件
+- (BOOL)addObjectArray:(NSArray<id<LH_DBObjectProtocol>> *)objs
+              inDBName:(NSString *)dbName
 {
     LH_DBCore *dbCore = [self getDBCoreByDBName:dbName];
     if (dbCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 start... 方法");
         return NO;
     }
     
@@ -287,24 +312,23 @@
 
 /// 从数据库中删除一条(组)数据
 /// @param obj 遵循<LH_DBObjectProtocol>的对象
+/// @param dbName 数据库文件名,不用加后缀. 会用该文件名创建 dbName.db 的数据库文件
 - (BOOL)deleteObject:(id<LH_DBObjectProtocol>)obj
-          fromDBName:(NSString *)dbName
+            inDBName:(NSString *)dbName
 {
     LH_DBCore *dbCore = [self getDBCoreByDBName:dbName];
     if (dbCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 start... 方法");
         return NO;
     }
     
     return [self removeObject:obj byCore:dbCore];
 }
 
-- (BOOL)deleteObjects:(NSArray<id<LH_DBObjectProtocol>> *)objs
-           fromDBName:(NSString *)dbName
+- (BOOL)deleteObjectArray:(NSArray<id<LH_DBObjectProtocol>> *)objs
+                 inDBName:(NSString *)dbName
 {
     LH_DBCore *dbCore = [self getDBCoreByDBName:dbName];
     if (dbCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 start... 方法");
         return NO;
     }
     
@@ -315,13 +339,13 @@
 /// 根据条件获取对应的数据
 /// @param clazz 遵循<LH_DBObjectProtocol>的对象
 /// @param condition 条件:<主键属性, 条件值>的字典.  key 必须是 <LH_DBObjectProtocol> 中 LH_Primarykey和LH_SearchKey包含的属性
-- (NSArray *)getObjectsWithClass:(Class)clazz
-                       condition:(NSDictionary<NSString *, NSString *> *)condition
-                      fromDBName:(NSString *)dbName
+/// @param dbName 数据库文件名,不用加后缀. 会用该文件名创建 dbName.db 的数据库文件
+- (NSArray *)searchObjectsFromClass:(Class)clazz
+                          condition:(NSDictionary<NSString *, NSString *> *)condition
+                           inDBName:(NSString *)dbName
 {
     LH_DBCore *dbCore = [self getDBCoreByDBName:dbName];
     if (dbCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 start... 方法");
         return @[];
     }
     
@@ -332,28 +356,29 @@
 /// @param clazz 遵循<LH_DBObjectProtocol>的对象
 /// @param conditionKey 必须是 <LH_DBObjectProtocol> 中 LH_Primarykey和LH_SearchKey包含的属性
 /// @param conditionValue 限定值. NSString 类型
-- (NSArray *)getObjectsWithClass:(Class)clazz
-                    conditionKey:(NSString *)conditionKey
-                  conditionValue:(NSString *)conditionValue
-                      fromDBName:(NSString *)dbName
+/// @param dbName 数据库文件名,不用加后缀. 会用该文件名创建 dbName.db 的数据库文件
+- (NSArray *)searchObjectsFromClass:(Class)clazz
+                       conditionKey:(NSString *)conditionKey
+                     conditionValue:(NSString *)conditionValue
+                           inDBName:(NSString *)dbName
 {
     LH_DBCore *dbCore = [self getDBCoreByDBName:dbName];
     if (dbCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 start... 方法");
         return @[];
     }
     
     return [self searchObjectsWithClass:clazz conditionKey:conditionKey conditionValue:conditionValue byCore:dbCore];
 }
 
+
 /// 获取数据表中的全部数据
 /// @param clazz 遵循<LH_DBObjectProtocol>的对象
-- (NSArray *)getAllObjectsWithClass:(Class)clazz
-                         fromDBName:(NSString *)dbName
+/// @param dbName 数据库文件名,不用加后缀. 会用该文件名创建 dbName.db 的数据库文件
+- (NSArray *)searchAllObjectsFromClass:(Class)clazz
+                              inDBName:(NSString *)dbName
 {
     LH_DBCore *dbCore = [self getDBCoreByDBName:dbName];
     if (dbCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 start... 方法");
         return @[];
     }
     
@@ -361,14 +386,25 @@
 }
 
 
+#warning TODO : NOT Finish -
+/// 分页查询数据 - 未实现,待处理
+- (NSArray *)searchObjectsFromClass:(Class)clazz
+                          pageIndex:(NSInteger)pageIndex
+                           pageSize:(NSInteger)pageSize
+                           inDBName:(NSString *)dbName
+{
+    return @[];
+}
+
+
 /// 删除数据表
 /// @param tableName 遵循<LH_DBObjectProtocol>的类名
+/// @param dbName 数据库文件名,不用加后缀. 会用该文件名创建 dbName.db 的数据库文件
 - (BOOL)removeTable:(NSString *)tableName
            inDBName:(NSString *)dbName
 {
     LH_DBCore *dbCore = [self getDBCoreByDBName:dbName];
     if (dbCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 start... 方法");
         return NO;
     }
     
@@ -376,52 +412,40 @@
 }
 
 
-
-
-
-
-
-#pragma mark - ======== 指定路径和文件名, 直接存储 ========
-/// 初始化数据库
-/// @param dbPath 数据库沙盒路径
-/// @param dbName 数据库名称 xxx
-- (void)startInDBPath:(NSString *)dbPath
-               dbName:(NSString *)dbName
+#pragma mark - ======== 直接存储,默认会存储在 LHDB.db 中 ========
+/// 设置默认的数据库文件名. e.g. @"abc", 会使用 abc.db 作为数据库文件, 不设置,默认为 LHDB.db. 设置之后,下面的所有增删改查都会在新数据库中执行
+- (void)setDefaultDBFileName:(NSString *)dbName
 {
-    if (self.defaultCore) {
-        self.defaultCore = nil;
+    if (self.dbPath == nil) {
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+        return;
     }
     
-    self.dbPath = dbPath;
-    
-    NSFileManager *fm = [NSFileManager defaultManager];
-    if ([fm fileExistsAtPath:dbPath] == NO) {
-        [fm createDirectoryAtPath:dbPath withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    NSString *db = [dbPath stringByAppendingPathComponent:dbName];
+    NSString *name = [NSString stringWithFormat:@"%@.db", dbName];
+    NSString *db = [self.dbPath stringByAppendingPathComponent:name];
     self.defaultCore = [[LH_DBCore alloc] initWithDBPath:db];
-    NSLog(@"初始化数据库");
 }
 
+
 #pragma mark ---- 增,删,改,查 ----
-/// 往数据库中增加或者更新一条数据<不开启事务>
+/// 默认数据库中增加或者更新一条数据
 /// @param obj 遵循<LH_DBObjectProtocol>的对象
-- (BOOL)addObject:(id<LH_DBObjectProtocol>)obj
+- (BOOL)defaultAddObject:(id<LH_DBObjectProtocol>)obj
 {
     if (self.defaultCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 startInDBPath:dbName: 方法");
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
         return NO;
     }
     
     return [self saveObject:obj byCore:self.defaultCore];
 }
 
-/// 往数据库中增加或者更新一组数据,开始事务
+/// 默认数据库中增加或者更新一组数据
 /// @param objs 遵循<LH_DBObjectProtocol>的一组对象
-- (BOOL)addObjectsInTransaction:(NSArray<id<LH_DBObjectProtocol>> *)objs
+- (BOOL)defaultAddObjectArray:(NSArray<id<LH_DBObjectProtocol>> *)objs
 {
     if (self.defaultCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 startInDBPath:dbName: 方法");
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
         return NO;
     }
     
@@ -429,22 +453,23 @@
 }
 
 
-/// 从数据库中删除一条(组)数据
+/// 默认数据库中删除一条(组)数据
 /// @param obj 遵循<LH_DBObjectProtocol>的对象
-- (BOOL)deleteObject:(id<LH_DBObjectProtocol>)obj
+- (BOOL)defaultDeleteObject:(id<LH_DBObjectProtocol>)obj
 {
     if (self.defaultCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 startInDBPath:dbName: 方法");
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
         return NO;
     }
     
     return [self removeObject:obj byCore:self.defaultCore];
 }
 
-- (BOOL)deleteObjects:(NSArray<id<LH_DBObjectProtocol>> *)objs
+
+- (BOOL)defaultDeleteObjectArray:(NSArray<id<LH_DBObjectProtocol>> *)objs
 {
     if (self.defaultCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 startInDBPath:dbName: 方法");
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
         return NO;
     }
     
@@ -452,45 +477,42 @@
 }
 
 
-/// 根据条件获取对应的数据
-/// @param clazz 遵循<LH_DBObjectProtocol>的类
+/// 根据条件查询默认数据库中的数据
+/// @param clazz 遵循<LH_DBObjectProtocol>的对象
 /// @param condition 条件:<主键属性, 条件值>的字典.  key 必须是 <LH_DBObjectProtocol> 中 LH_Primarykey和LH_SearchKey包含的属性
-- (NSArray *)getObjectsWithClass:(Class)clazz
-                       condition:(NSDictionary<NSString *, NSString *> *)condition
+- (NSArray *)defaultSearchObjectsFromClass:(Class)clazz
+                                 condition:(NSDictionary<NSString *, NSString *> *)condition
 {
     if (self.defaultCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 startInDBPath:dbName: 方法");
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
         return @[];
     }
     
     return [self searchObjectsWithClass:clazz condition:condition byCore:self.defaultCore];
 }
 
-/// 根据限定条件获取数据
+/// 根据限定条件查询默认数据库的数据
 /// @param clazz 遵循<LH_DBObjectProtocol>的对象
 /// @param conditionKey 必须是 <LH_DBObjectProtocol> 中 LH_Primarykey和LH_SearchKey包含的属性
 /// @param conditionValue 限定值. NSString 类型
-- (NSArray *)getObjectsWithClass:(Class)clazz
-                    conditionKey:(NSString *)conditionKey
-                  conditionValue:(NSString *)conditionValue
+- (NSArray *)defaultSearchObjectsFromClass:(Class)clazz
+                              conditionKey:(NSString *)conditionKey
+                            conditionValue:(NSString *)conditionValue
 {
     if (self.defaultCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 startInDBPath:dbName: 方法");
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
         return @[];
     }
     
     return [self searchObjectsWithClass:clazz conditionKey:conditionKey conditionValue:conditionValue byCore:self.defaultCore];
 }
 
-
-
-
-/// 获取数据表中的全部数据
-/// @param clazz 遵循<LH_DBObjectProtocol>的类
-- (NSArray *)getAllObjectsWithClass:(Class)clazz
+/// 获取默认数据库中的全部数据
+/// @param clazz 遵循<LH_DBObjectProtocol>的对象
+- (NSArray *)defaultSearchAllObjectsFromClass:(Class)clazz
 {
     if (self.defaultCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 startInDBPath:dbName: 方法");
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
         return @[];
     }
     
@@ -498,12 +520,12 @@
 }
 
 
-/// 删除数据表
+/// 删除默认数据库中的指定表
 /// @param tableName 遵循<LH_DBObjectProtocol>的类名
-- (BOOL)removeTable:(NSString *)tableName
+- (BOOL)defaultRemoveTable:(NSString *)tableName
 {
     if (self.defaultCore == nil) {
-        NSLog(@"LH_DBTool 请先调用 startInDBPath:dbName: 方法");
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
         return NO;
     }
     

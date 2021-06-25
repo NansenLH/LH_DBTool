@@ -77,11 +77,11 @@
                                 </constraints>
                             </stackView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="yn5-zQ-VMJ">
-                                <rect key="frame" x="95" y="33" width="185" height="32"/>
+                                <rect key="frame" x="93.5" y="33" width="188" height="32"/>
                                 <segments>
-                                    <segment title="testDB"/>
-                                    <segment title="abc"/>
-                                    <segment title="ttt"/>
+                                    <segment title="default"/>
+                                    <segment title="1"/>
+                                    <segment title="2"/>
                                 </segments>
                                 <connections>
                                     <action selector="segmentChanged:" destination="whP-gf-Uak" eventType="valueChanged" id="NzJ-gK-r7V"/>
