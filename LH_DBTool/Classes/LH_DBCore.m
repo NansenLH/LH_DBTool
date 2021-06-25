@@ -355,6 +355,43 @@ static NSString *const LH_DBModelColumnType = @"blob";
 }
 
 
+- (NSString *)pageSearchSQLWithOrderKey:(NSString *)orderKey
+                              ascending:(BOOL)ascending
+                              pageIndex:(NSInteger)pageIndex
+                               pageSize:(NSInteger)pageSize
+                              withClass:(Class<LH_DBObjectProtocol>)clazz
+{
+    NSString *tableName = NSStringFromClass(clazz);
+    NSString *keyName = [self processReservedWord:orderKey];
+    NSString *asc = ascending ? @"asc" : @"desc";
+    NSInteger start = (pageIndex-1) * pageSize;
+    
+    NSMutableString *sql = [NSMutableString stringWithFormat:@"select * from %s order by %@ %@ limit %zd, %zd", [tableName UTF8String], keyName, asc, start, pageSize];
+    
+    return sql;
+}
+
+- (NSString *)pageSearchSQLWithKey1:(NSString *)key1
+                      key1Ascending:(BOOL)ascending1
+                               key2:(NSString *)key2
+                      key2Ascending:(BOOL)ascending2
+                          pageIndex:(NSInteger)pageIndex
+                           pageSize:(NSInteger)pageSize
+                          withClass:(Class<LH_DBObjectProtocol>)clazz
+{
+    NSString *tableName = NSStringFromClass(clazz);
+    NSString *key1Name = [self processReservedWord:key1];
+    NSString *asc1 = ascending1 ? @"asc" : @"desc";
+    NSString *key2Name = [self processReservedWord:key2];
+    NSString *asc2 = ascending2 ? @"asc" : @"desc";
+    NSInteger start = (pageIndex-1) * pageSize;
+    
+    NSMutableString *sql = [NSMutableString stringWithFormat:@"select * from %s order by %@ %@, %@ %@ limit %zd, %zd", [tableName UTF8String], key1Name, asc1, key2Name, asc2, start, pageSize];
+    
+    return sql;
+}
+
+
 
 
 //    @"f":@"float",

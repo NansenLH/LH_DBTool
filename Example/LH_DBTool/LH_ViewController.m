@@ -38,46 +38,40 @@ static NSString *const DBName2 = @"222";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.segIndex = 0;
-    self.dbName = @"LHDB";
-    
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
     [[LH_DBTool defaultTool] startInDBPath:docDir];
     
     [self.view addSubview:self.tableView];
+    
+    self.segIndex = 0;
 }
 
 - (IBAction)segmentChanged:(UISegmentedControl *)sender {
         
     self.segIndex = sender.selectedSegmentIndex;
     
-    [self.dataArray removeAllObjects];
-    if (self.segIndex == 0) {
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchAllObjectsFromClass:[TestModel class]]];
-    }
-    else if (self.segIndex == 1) {
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:DBName1]];
-    }
-    else {
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:DBName2]];
-    }
     
-    [self.tableView reloadData];
 }
 
 - (void)setSegIndex:(NSInteger)segIndex
 {
     _segIndex = segIndex;
     
-    if (segIndex == 0) {
+    [self.dataArray removeAllObjects];
+    if (self.segIndex == 0) {
         self.dbName = @"LHDB";
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchAllObjectsFromClass:[TestModel class]]];
     }
-    else if (segIndex == 1) {
+    else if (self.segIndex == 1) {
         self.dbName = DBName1;
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:DBName1]];
     }
     else {
         self.dbName = DBName2;
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:DBName2]];
     }
+    
+    [self.tableView reloadData];
 }
 
 
@@ -216,7 +210,7 @@ static NSString *const DBName2 = @"222";
 {
     [self.dataArray removeAllObjects];
     if (self.segIndex == 0) {
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchObjectsFromClass:[TestModel class] conditionKey:TestModel_SearchKey_Count conditionValue:@"200"]];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchObjectsFromClass:[TestModel class] sortByKey:TestModel_Key_Page ascending:NO pageIndex:2 pageSize:3]];
     }
     else {
         [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchObjectsFromClass:[TestModel class] conditionKey:TestModel_SearchKey_Count conditionValue:@"200" inDBName:self.dbName]];

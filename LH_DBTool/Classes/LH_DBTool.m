@@ -167,6 +167,48 @@
     return [dbCore excuteSql:sql withClass:clazz];
 }
 
+
+/// 根据限定条件获取数据
+- (NSArray *)searchPageObjectsWithClass:(Class)clazz
+                              sortByKey:(NSString *)sortKey
+                              ascending:(BOOL)ascending
+                              pageIndex:(NSInteger)pageIndex
+                               pageSize:(NSInteger)pageSize
+                                 byCore:(LH_DBCore *)dbCore
+{
+    if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
+        NSLog(@"Warning: 分页查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
+        return @[];
+    }
+    
+    if (pageIndex < 1) {
+        NSLog(@"Warning: 分页查询 pageIndex[%zd] 参数不合法", pageIndex);
+        return @[];
+    }
+    
+    if (pageSize < 1 || pageSize > 100) {
+        NSLog(@"Warning: 分页查询 pageSize[%zd] 参数不合法", pageSize);
+        return @[];
+    }
+    
+    id<LH_DBObjectProtocol> obj = [clazz new];
+    
+    [dbCore tableCheck:obj];
+    
+    NSMutableArray *availableProperties = [NSMutableArray array];
+    [availableProperties addObjectsFromArray:[obj LH_Primarykey]];
+    [availableProperties addObjectsFromArray:[obj LH_SearchKey]];
+    
+    if ([availableProperties containsObject:sortKey] == NO) {
+        NSLog(@"Warning: 分页查询 -> sortKey=%@ 不合法", sortKey);
+        return @[];
+    }
+    
+    NSString *sql = [dbCore pageSearchSQLWithOrderKey:sortKey ascending:ascending pageIndex:pageIndex pageSize:pageSize withClass:clazz];
+    return [dbCore excuteSql:sql withClass:clazz];
+}
+
+
 /// 获取数据表中的全部数据
 - (NSArray *)allObjectsWithClass:(Class)clazz
                           byCore:(LH_DBCore *)dbCore
@@ -386,14 +428,26 @@
 }
 
 
-#warning TODO : NOT Finish -
-/// 分页查询数据 - 未实现,待处理
+/// 分页查询数据
+/// @param clazz 遵循<LH_DBObjectProtocol>的对象
+/// @param sortKey 必须是 <LH_DBObjectProtocol> 中 LH_Primarykey和LH_SearchKey包含的属性
+/// @param ascending 是否升序. 升序-YES, 降序-NO
+/// @param pageIndex 第几页. 从 1 开始
+/// @param pageSize 每页的个数. 最小 1, 建议不大于 50. 限制最大值 100
+/// @param dbName 数据库文件名
 - (NSArray *)searchObjectsFromClass:(Class)clazz
+                          sortByKey:(NSString *)sortKey
+                          ascending:(BOOL)ascending
                           pageIndex:(NSInteger)pageIndex
                            pageSize:(NSInteger)pageSize
                            inDBName:(NSString *)dbName
 {
-    return @[];
+    LH_DBCore *dbCore = [self getDBCoreByDBName:dbName];
+    if (dbCore == nil) {
+        return @[];
+    }
+    
+    return [self searchPageObjectsWithClass:clazz sortByKey:sortKey ascending:ascending pageIndex:pageIndex pageSize:pageSize byCore:dbCore];
 }
 
 
@@ -517,6 +571,27 @@
     }
     
     return [self allObjectsWithClass:clazz byCore:self.defaultCore];
+}
+
+
+/// 获取默认数据库中的分页查询数据
+/// @param clazz 遵循<LH_DBObjectProtocol>的对象
+/// @param sortKey 必须是 <LH_DBObjectProtocol> 中 LH_Primarykey和LH_SearchKey包含的属性
+/// @param ascending 是否升序. 升序-YES, 降序-NO
+/// @param pageIndex 第几页. 从 1 开始
+/// @param pageSize 每页的个数. 最小 1, 建议不大于 50. 限制最大值 100
+- (NSArray *)defaultSearchObjectsFromClass:(Class)clazz
+                                 sortByKey:(NSString *)sortKey
+                                 ascending:(BOOL)ascending
+                                 pageIndex:(NSInteger)pageIndex
+                                  pageSize:(NSInteger)pageSize
+{
+    if (self.defaultCore == nil) {
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+        return @[];
+    }
+    
+    return [self searchPageObjectsWithClass:clazz sortByKey:sortKey ascending:ascending pageIndex:pageIndex pageSize:pageSize byCore:self.defaultCore];
 }
 
 

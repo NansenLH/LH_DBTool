@@ -36,6 +36,22 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)formatCondition:(NSDictionary<NSString *, NSString *> *)condition
                     WithClass:(Class<LH_DBObjectProtocol>)clazz;
 
+
+- (NSString *)pageSearchSQLWithOrderKey:(NSString *)orderKey
+                              ascending:(BOOL)ascending
+                              pageIndex:(NSInteger)pageIndex
+                               pageSize:(NSInteger)pageSize
+                              withClass:(Class<LH_DBObjectProtocol>)clazz;
+
+- (NSString *)pageSearchSQLWithKey1:(NSString *)key1
+                      key1Ascending:(BOOL)ascending1
+                               key2:(NSString *)key2
+                      key2Ascending:(BOOL)ascending2
+                          pageIndex:(NSInteger)pageIndex
+                           pageSize:(NSInteger)pageSize
+                          withClass:(Class<LH_DBObjectProtocol>)clazz;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

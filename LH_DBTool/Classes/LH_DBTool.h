@@ -68,9 +68,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray *)searchAllObjectsFromClass:(Class)clazz
                               inDBName:(NSString *)dbName;
 
-#warning TODO : NOT Finish -
-/// 分页查询数据 - 未实现,待处理
+/// 分页查询数据
+/// @param clazz 遵循<LH_DBObjectProtocol>的对象
+/// @param sortKey 必须是 <LH_DBObjectProtocol> 中 LH_Primarykey和LH_SearchKey包含的属性
+/// @param ascending 是否升序. 升序-YES, 降序-NO
+/// @param pageIndex 第几页. 从 1 开始
+/// @param pageSize 每页的个数. 最小 1, 建议不大于 50. 限制最大值 100
+/// @param dbName 数据库文件名
 - (NSArray *)searchObjectsFromClass:(Class)clazz
+                          sortByKey:(NSString *)sortKey
+                          ascending:(BOOL)ascending
                           pageIndex:(NSInteger)pageIndex
                            pageSize:(NSInteger)pageSize
                            inDBName:(NSString *)dbName;
@@ -121,6 +128,22 @@ NS_ASSUME_NONNULL_BEGIN
 /// 获取默认数据库中的全部数据
 /// @param clazz 遵循<LH_DBObjectProtocol>的对象
 - (NSArray *)defaultSearchAllObjectsFromClass:(Class)clazz;
+
+
+/// 获取默认数据库中的分页查询数据
+/// @param clazz 遵循<LH_DBObjectProtocol>的对象
+/// @param sortKey 必须是 <LH_DBObjectProtocol> 中 LH_Primarykey和LH_SearchKey包含的属性
+/// @param ascending 是否升序. 升序-YES, 降序-NO
+/// @param pageIndex 第几页. 从 1 开始
+/// @param pageSize 每页的个数. 最小 1, 建议不大于 50. 限制最大值 100
+- (NSArray *)defaultSearchObjectsFromClass:(Class)clazz
+                                 sortByKey:(NSString *)sortKey
+                                 ascending:(BOOL)ascending
+                                 pageIndex:(NSInteger)pageIndex
+                                  pageSize:(NSInteger)pageSize;
+
+
+
 
 
 /// 删除默认数据库中的指定表
