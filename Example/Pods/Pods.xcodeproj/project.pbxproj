@@ -102,7 +102,7 @@
 		07AFA97A683CDD248D6CD17A03891E1C /* YYModel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = YYModel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		088B7712EF991F0295DC59F95C75714B /* LH_DBTool.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = LH_DBTool.modulemap; sourceTree = "<group>"; };
 		123A49FA2EC9B7CEA9E4C2835D73FE28 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseQueue.m; path = src/fmdb/FMDatabaseQueue.m; sourceTree = "<group>"; };
-		1E514CBD6E2DBB2C43B8803C03CFA95F /* Pods_LH_DBTool_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_LH_DBTool_Tests.framework; path = "Pods-LH_DBTool_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E514CBD6E2DBB2C43B8803C03CFA95F /* Pods_LH_DBTool_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LH_DBTool_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E73E54368F053F8667E2B9405756EAB /* Pods-LH_DBTool_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-LH_DBTool_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		2093EBD577725651A67B604C4B56382E /* Pods-LH_DBTool_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-LH_DBTool_Example-Info.plist"; sourceTree = "<group>"; };
 		20BB25444DA3DE640B8A6A60A58D693D /* YYModel.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = YYModel.modulemap; sourceTree = "<group>"; };
@@ -117,7 +117,7 @@
 		37FEC326B144D4BAB82C1FA0F3BCCF3F /* FMResultSet.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = src/fmdb/FMResultSet.h; sourceTree = "<group>"; };
 		3A0A21413D27BB2320AB75AE8B34AB9B /* Pods-LH_DBTool_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-LH_DBTool_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		4DB9321182764FD1D64D467CF55A85C4 /* Pods-LH_DBTool_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-LH_DBTool_Example.modulemap"; sourceTree = "<group>"; };
-		54B67963F9E5AC1BDAEFC57C5B0A8DD5 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		54B67963F9E5AC1BDAEFC57C5B0A8DD5 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5914BB3F4297AC6F258180DC267A96A3 /* YYModel-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "YYModel-prefix.pch"; sourceTree = "<group>"; };
 		5E8C45ABFC3EA2D428C954EFAF95B951 /* Pods-LH_DBTool_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-LH_DBTool_Example-umbrella.h"; sourceTree = "<group>"; };
 		5EE0512EB8A6F500426BF6B19E75DB6F /* LH_DBTool-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "LH_DBTool-prefix.pch"; sourceTree = "<group>"; };
@@ -126,7 +126,7 @@
 		6C99C395B47EE91112A12BB4EE313D6D /* YYModel-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "YYModel-Info.plist"; sourceTree = "<group>"; };
 		6E4029F5837173BA26287D8BF3D3466C /* Pods-LH_DBTool_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-LH_DBTool_Example-dummy.m"; sourceTree = "<group>"; };
 		70D4A2F374D79B7FC4A7CB76DD9099F6 /* LH_DBTool.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LH_DBTool.debug.xcconfig; sourceTree = "<group>"; };
-		7305150F887F01185D5325554E468600 /* LH_DBTool.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = LH_DBTool.framework; path = LH_DBTool.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7305150F887F01185D5325554E468600 /* LH_DBTool.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LH_DBTool.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		78F6B071FB5EC2CFA00326C211C7A507 /* NSObject+YYModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSObject+YYModel.h"; path = "YYModel/NSObject+YYModel.h"; sourceTree = "<group>"; };
 		7D2EFFB6AD6B6C817F4556DF311EDDFE /* Pods-LH_DBTool_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-LH_DBTool_Tests-Info.plist"; sourceTree = "<group>"; };
 		7D51B4DC7DEE0B3FF8755A927D9DDF5B /* FMDatabaseQueue.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FMDatabaseQueue.h; path = src/fmdb/FMDatabaseQueue.h; sourceTree = "<group>"; };
@@ -138,14 +138,14 @@
 		9263E2247850CFF394793F3D31969675 /* LH_DBTool.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = LH_DBTool.m; path = LH_DBTool/Classes/LH_DBTool.m; sourceTree = "<group>"; };
 		9BAEEE13DCB2E4A32EDE11AB98C16760 /* Pods-LH_DBTool_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-LH_DBTool_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		9C1F4DCB94AB2AF54686540697855A62 /* YYModel.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = YYModel.release.xcconfig; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		A3A80BA70CFB7F75C5391BEBBBA8C9DA /* FMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = FMDB.framework; path = FMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A3A80BA70CFB7F75C5391BEBBBA8C9DA /* FMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A705CB1DF7554DDC8BE731A5C7A932B2 /* YYModel-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "YYModel-dummy.m"; sourceTree = "<group>"; };
 		AE9E3AE067C47CEFE6E25ECC263F6814 /* Pods-LH_DBTool_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-LH_DBTool_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		B0180DA96457E747DB9E7735E69672EF /* LH_DBTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LH_DBTool.release.xcconfig; sourceTree = "<group>"; };
 		B7EAEEAFD45CE8C9AE98A71A5DFC823B /* Pods-LH_DBTool_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-LH_DBTool_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		B8B2CDCA909757EAFB1A35B2AA782F3B /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
-		B8EA09A4E0A960E7731CBCC4195F2A75 /* LH_DBTool.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = LH_DBTool.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		B8EA09A4E0A960E7731CBCC4195F2A75 /* LH_DBTool.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = LH_DBTool.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		BC03AA4F025B154B588FD9C0AC9D3550 /* Pods-LH_DBTool_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-LH_DBTool_Tests.modulemap"; sourceTree = "<group>"; };
 		C0D7EB12378A7FA650B700D080ABEB0E /* Pods-LH_DBTool_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-LH_DBTool_Example-frameworks.sh"; sourceTree = "<group>"; };
 		C258BD5BCFECE1E2AFBC17E0C5477642 /* FMResultSet.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = src/fmdb/FMResultSet.m; sourceTree = "<group>"; };
@@ -158,14 +158,14 @@
 		D5B4E43F4D778EA582A8374278C6B2DE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		D8D2CE569097CED7D8D75D224D979288 /* Pods-LH_DBTool_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-LH_DBTool_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		E195A5799F0EE3BBB51B3EAB403491BA /* NSObject+YYModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSObject+YYModel.m"; path = "YYModel/NSObject+YYModel.m"; sourceTree = "<group>"; };
-		E460D5B0416D36F66EE8EC89E5D2FA0A /* YYModel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = YYModel.framework; path = YYModel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E460D5B0416D36F66EE8EC89E5D2FA0A /* YYModel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = YYModel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB61C542219C2D477C50EB3853CA77FA /* FMDB.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = FMDB.release.xcconfig; sourceTree = "<group>"; };
 		EC5EA2F81D65565FC4706237BA344AFE /* LH_DBCore.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = LH_DBCore.m; path = LH_DBTool/Classes/LH_DBCore.m; sourceTree = "<group>"; };
 		EF91E816B7EA74E65C58E977DB7E5181 /* FMDB-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "FMDB-dummy.m"; sourceTree = "<group>"; };
-		F5DAFC1DBD1C91538567DE68021E7205 /* Pods_LH_DBTool_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_LH_DBTool_Example.framework; path = "Pods-LH_DBTool_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5DAFC1DBD1C91538567DE68021E7205 /* Pods_LH_DBTool_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LH_DBTool_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F791E623A2CD31747794639BAA4152AA /* LH_DBTool-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "LH_DBTool-dummy.m"; sourceTree = "<group>"; };
 		F7AF7413B3E59EEFD4AA3BB66E5E9AB8 /* YYClassInfo.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = YYClassInfo.m; path = YYModel/YYClassInfo.m; sourceTree = "<group>"; };
-		F84BA44792672128399034549161FD98 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		F84BA44792672128399034549161FD98 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		FC6181F163201E74ABCF4FFD48618BA1 /* YYModel.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = YYModel.debug.xcconfig; sourceTree = "<group>"; };
 		FF44BB55F624F656653E76EC424CD43E /* FMDB-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "FMDB-prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -224,7 +224,6 @@
 				93CCC004BFCF3A8DD93E00C5A7713630 /* standard */,
 				AB93EC40FF7733A6566BAA9BA164636D /* Support Files */,
 			);
-			name = FMDB;
 			path = FMDB;
 			sourceTree = "<group>";
 		};
@@ -391,7 +390,6 @@
 				2C0419BEDE150125870D4C96C7E17878 /* YYModel.h */,
 				980A21563289C6741176A59EEEE80D17 /* Support Files */,
 			);
-			name = YYModel;
 			path = YYModel;
 			sourceTree = "<group>";
 		};
@@ -959,10 +957,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
@@ -1119,7 +1117,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;

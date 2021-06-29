@@ -255,7 +255,12 @@ static NSString *const LH_DBModelColumnType = @"blob";
     return models;
 }
 
-
+- (NSString *)formatDeleteAllSQLWithClass:(Class)clazz
+{
+    NSString *tableName = NSStringFromClass(clazz);
+    
+    return [NSString stringWithFormat:@"DELETE FROM %@", tableName];
+}
 
 - (NSString *)formatDeleteSQLWithObjc:(id<LH_DBObjectProtocol>)data_obj
 {

@@ -42,6 +42,11 @@ NS_ASSUME_NONNULL_BEGIN
             inDBName:(NSString *)dbName;
 - (BOOL)deleteObjectArray:(NSArray<id<LH_DBObjectProtocol>> *)objs
                  inDBName:(NSString *)dbName;
+/// 删除表中的所有数据
+/// @param clazz 遵循<LH_DBObjectProtocol>的对象
+/// @param dbName 数据库文件名
+- (BOOL)deleteAllObjectFromClass:(Class)clazz
+                        InDBName:(NSString *)dbName;
 
 
 /// 根据条件获取对应的数据
@@ -109,7 +114,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param obj 遵循<LH_DBObjectProtocol>的对象
 - (BOOL)defaultDeleteObject:(id<LH_DBObjectProtocol>)obj;
 - (BOOL)defaultDeleteObjectArray:(NSArray<id<LH_DBObjectProtocol>> *)objs;
-
+/// 默认数据库中删除指定表中的所有数据
+/// @param clazz 遵循<LH_DBObjectProtocol>的对象
+- (BOOL)defaultDeleteAllObjectsFromClass:(Class)clazz;
 
 /// 根据条件查询默认数据库中的数据
 /// @param clazz 遵循<LH_DBObjectProtocol>的对象

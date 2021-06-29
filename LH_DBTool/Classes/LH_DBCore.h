@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray*)excuteSql:(NSString*)sql withClass:(Class)clazz;
 
 #pragma mark - SQL format Method
+- (NSString *)formatDeleteAllSQLWithClass:(Class)clazz;
 - (NSString *)formatDeleteSQLWithObjc:(id<LH_DBObjectProtocol>)data_obj;
 
 #pragma mark - help Method

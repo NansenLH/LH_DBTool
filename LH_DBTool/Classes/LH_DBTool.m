@@ -100,17 +100,28 @@
     return isSuccess;
 }
 
+- (BOOL)removeAllObjects:(Class)clazz
+                  byCore:(LH_DBCore *)dbCore
+{
+    id<LH_DBObjectProtocol> obj = [clazz new];
+    [dbCore tableCheck:obj];
+    
+    NSString *query = [dbCore formatDeleteAllSQLWithClass:clazz];
+    return [dbCore.dataBase executeUpdate:query, nil];
+}
+
 
 /// 根据条件获取对应的数据
 - (NSArray *)searchObjectsWithClass:(Class)clazz
                           condition:(NSDictionary<NSString *, NSString *> *)condition
                              byCore:(LH_DBCore *)dbCore
 {
-    NSObject<LH_DBObjectProtocol> *obj = [[clazz alloc] init];
-    if ([obj respondsToSelector:@selector(LH_Primarykey)] == NO) {
+    if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
         NSLog(@"Warning: 条件查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
         return @[];
     }
+    
+    id<LH_DBObjectProtocol> obj = [clazz new];
     
     [dbCore tableCheck:obj];
     
@@ -377,6 +388,15 @@
     return [self removeObjects:objs byCore:dbCore];
 }
 
+- (BOOL)deleteAllObjectFromClass:(Class)clazz InDBName:(NSString *)dbName
+{
+    LH_DBCore *dbCore = [self getDBCoreByDBName:dbName];
+    if (dbCore == nil) {
+        return NO;
+    }
+    
+    return [self removeAllObjects:clazz byCore:dbCore];
+}
 
 /// 根据条件获取对应的数据
 /// @param clazz 遵循<LH_DBObjectProtocol>的对象
@@ -528,6 +548,16 @@
     }
     
     return [self removeObjects:objs byCore:self.defaultCore];
+}
+
+- (BOOL)defaultDeleteAllObjectsFromClass:(Class)clazz
+{
+    if (self.defaultCore == nil) {
+        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+        return NO;
+    }
+    
+    return [self removeAllObjects:clazz byCore:self.defaultCore];
 }
 
 
