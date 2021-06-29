@@ -60,15 +60,15 @@ static NSString *const DBName2 = @"222";
     [self.dataArray removeAllObjects];
     if (self.segIndex == 0) {
         self.dbName = @"LHDB";
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchAllObjectsFromClass:[TestModel class]]];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class]]];
     }
     else if (self.segIndex == 1) {
         self.dbName = DBName1;
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:DBName1]];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] customTable:nil inDBName:DBName1]];
     }
     else {
         self.dbName = DBName2;
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:DBName2]];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] customTable:nil inDBName:DBName2]];
     }
     
     [self.tableView reloadData];
@@ -145,16 +145,16 @@ static NSString *const DBName2 = @"222";
     
     [self.dataArray removeAllObjects];
     if (self.segIndex == 0) {
-        [[LH_DBTool defaultTool] defaultAddObjectArray:arr];
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchAllObjectsFromClass:[TestModel class]]];
+        [[LH_DBTool defaultTool] addObjectArray:arr];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class]]];
     }
     else if (self.segIndex == 1) {
-        [[LH_DBTool defaultTool] addObjectArray:arr inDBName:self.dbName];
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:self.dbName]];
+        [[LH_DBTool defaultTool] addObjectArray:arr toCustomTable:nil inDBName:self.dbName];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] customTable:nil inDBName:self.dbName]];
     }
     else {
-        [[LH_DBTool defaultTool] addObjectArray:arr inDBName:self.dbName];
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:self.dbName]];
+        [[LH_DBTool defaultTool] addObjectArray:arr toCustomTable:nil inDBName:self.dbName];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] customTable:nil inDBName:self.dbName]];
     }
     
     [self.tableView reloadData];
@@ -172,14 +172,14 @@ static NSString *const DBName2 = @"222";
     }
     
     if (self.segIndex == 0) {
-        [[LH_DBTool defaultTool] defaultDeleteObjectArray:arr];
+        [[LH_DBTool defaultTool] deleteObjectArray:arr];
         [self.dataArray removeAllObjects];
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchAllObjectsFromClass:[TestModel class]]];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class]]];
     }
     else {
-        [[LH_DBTool defaultTool] deleteObjectArray:arr inDBName:self.dbName];
+        [[LH_DBTool defaultTool] deleteObjectArray:arr fromCustomTable:nil inDBName:self.dbName];
         [self.dataArray removeAllObjects];
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:self.dbName]];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] customTable:nil inDBName:self.dbName]];
     }
     
     [self.tableView reloadData];
@@ -193,14 +193,14 @@ static NSString *const DBName2 = @"222";
     m1.count = 666;
     
     if (self.segIndex == 0) {
-        [[LH_DBTool defaultTool] defaultAddObject:m1];
+        [[LH_DBTool defaultTool] addObject:m1];
         [self.dataArray removeAllObjects];
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchAllObjectsFromClass:[TestModel class]]];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class]]];
     }
     else {
-        [[LH_DBTool defaultTool] addObject:m1 inDBName:self.dbName];
+        [[LH_DBTool defaultTool] addObject:m1 toCustomTable:nil inDBName:self.dbName];
         [self.dataArray removeAllObjects];
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] inDBName:self.dbName]];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchAllObjectsFromClass:[TestModel class] customTable:nil inDBName:self.dbName]];
     }
     
     [self.tableView reloadData];
@@ -210,10 +210,10 @@ static NSString *const DBName2 = @"222";
 {
     [self.dataArray removeAllObjects];
     if (self.segIndex == 0) {
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] defaultSearchObjectsFromClass:[TestModel class] sortByKey:TestModel_Key_Page ascending:NO pageIndex:2 pageSize:3]];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchObjectsFromClass:[TestModel class] sortByKey:TestModel_Key_Page ascending:NO pageIndex:2 pageSize:3]];
     }
     else {
-        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchObjectsFromClass:[TestModel class] conditionKey:TestModel_SearchKey_Count conditionValue:@"200" inDBName:self.dbName]];
+        [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchObjectsFromClass:[TestModel class] conditionKey:TestModel_SearchKey_Count conditionValue:@"200" customTable:nil inDBName:self.dbName]];
     }
     
     [self.tableView reloadData];

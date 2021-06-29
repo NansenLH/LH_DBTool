@@ -21,6 +21,8 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
+		6A2F5EA9268AF6CE00D631FD /* LH_TestBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A2F5EA8268AF6CE00D631FD /* LH_TestBaseModel.m */; };
+		6A2F5EAE268AF7ED00D631FD /* LH_SecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A2F5EAD268AF7ED00D631FD /* LH_SecondViewController.m */; };
 		6A60EBD22627E8F100548A6C /* TestModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A60EBD12627E8F100548A6C /* TestModel.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
@@ -63,6 +65,10 @@
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
 		637CEFD3D4E8EB0C86BA4C5F /* Pods-LH_DBTool_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LH_DBTool_Example.debug.xcconfig"; path = "Target Support Files/Pods-LH_DBTool_Example/Pods-LH_DBTool_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		63B2999616DE2B8E37D3CEB7 /* Pods_LH_DBTool_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LH_DBTool_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A2F5EA7268AF6CE00D631FD /* LH_TestBaseModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LH_TestBaseModel.h; sourceTree = "<group>"; };
+		6A2F5EA8268AF6CE00D631FD /* LH_TestBaseModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LH_TestBaseModel.m; sourceTree = "<group>"; };
+		6A2F5EAC268AF7ED00D631FD /* LH_SecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LH_SecondViewController.h; sourceTree = "<group>"; };
+		6A2F5EAD268AF7ED00D631FD /* LH_SecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LH_SecondViewController.m; sourceTree = "<group>"; };
 		6A60EBD02627E8F000548A6C /* TestModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestModel.h; sourceTree = "<group>"; };
 		6A60EBD12627E8F100548A6C /* TestModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestModel.m; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -151,8 +157,12 @@
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
 				6003F5A5195388D20070C39A /* LH_ViewController.h */,
 				6003F5A6195388D20070C39A /* LH_ViewController.m */,
+				6A2F5EAC268AF7ED00D631FD /* LH_SecondViewController.h */,
+				6A2F5EAD268AF7ED00D631FD /* LH_SecondViewController.m */,
 				6A60EBD02627E8F000548A6C /* TestModel.h */,
 				6A60EBD12627E8F100548A6C /* TestModel.m */,
+				6A2F5EA7268AF6CE00D631FD /* LH_TestBaseModel.h */,
+				6A2F5EA8268AF6CE00D631FD /* LH_TestBaseModel.m */,
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
@@ -375,7 +385,9 @@
 			files = (
 				6003F59E195388D20070C39A /* LH_AppDelegate.m in Sources */,
 				6003F5A7195388D20070C39A /* LH_ViewController.m in Sources */,
+				6A2F5EA9268AF6CE00D631FD /* LH_TestBaseModel.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
+				6A2F5EAE268AF7ED00D631FD /* LH_SecondViewController.m in Sources */,
 				6A60EBD22627E8F100548A6C /* TestModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

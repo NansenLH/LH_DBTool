@@ -21,28 +21,34 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDBPath:(NSString*)dbPath;
 
 #pragma mark - table check
-- (void)tableCheck:(id<LH_DBObjectProtocol>)dataObject;
+- (void)tableCheck:(id<LH_DBObjectProtocol>)dataObject
+         tableName:(NSString *)tableName;
 
 #pragma mark - insert record Method
-- (NSString *)getInsertRecordQuery:(id<LH_DBObjectProtocol>)dataObject;
+- (NSString *)getInsertRecordQuery:(id<LH_DBObjectProtocol>)dataObject
+                         tableName:(NSString *)tableName;
 
 #pragma mark - excuteSql Method
-- (NSArray*)excuteSql:(NSString*)sql withClass:(Class)clazz;
+- (NSArray *)excuteSql:(NSString*)sql
+             withClass:(Class)clazz;
 
 #pragma mark - SQL format Method
-- (NSString *)formatDeleteAllSQLWithClass:(Class)clazz;
-- (NSString *)formatDeleteSQLWithObjc:(id<LH_DBObjectProtocol>)data_obj;
+- (NSString *)formatDeleteAllSQLWithTableName:(NSString *)tableName;
+- (NSString *)formatDeleteSQLWithObjc:(id<LH_DBObjectProtocol>)data_obj
+                            tableName:(NSString *)tableName;
 
 #pragma mark - help Method
 - (NSString *)formatCondition:(NSDictionary<NSString *, NSString *> *)condition
-                    WithClass:(Class<LH_DBObjectProtocol>)clazz;
+                    WithClass:(Class<LH_DBObjectProtocol>)clazz
+                    tableName:(NSString *)tableName;
 
 
 - (NSString *)pageSearchSQLWithOrderKey:(NSString *)orderKey
                               ascending:(BOOL)ascending
                               pageIndex:(NSInteger)pageIndex
                                pageSize:(NSInteger)pageSize
-                              withClass:(Class<LH_DBObjectProtocol>)clazz;
+                              withClass:(Class<LH_DBObjectProtocol>)clazz
+                              tableName:(NSString *)tableName;
 
 - (NSString *)pageSearchSQLWithKey1:(NSString *)key1
                       key1Ascending:(BOOL)ascending1
@@ -50,7 +56,8 @@ NS_ASSUME_NONNULL_BEGIN
                       key2Ascending:(BOOL)ascending2
                           pageIndex:(NSInteger)pageIndex
                            pageSize:(NSInteger)pageSize
-                          withClass:(Class<LH_DBObjectProtocol>)clazz;
+                          withClass:(Class<LH_DBObjectProtocol>)clazz
+                          tableName:(NSString *)tableName;
 
 
 @end

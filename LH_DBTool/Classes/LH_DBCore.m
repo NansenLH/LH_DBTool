@@ -78,11 +78,9 @@ static NSString *const LH_DBModelColumnType = @"blob";
 
 
 #pragma mark - table check
-- (void)tableCheck:(id<LH_DBObjectProtocol>)data_obj
+- (void)tableCheck:(id<LH_DBObjectProtocol>)dataObject
+         tableName:(NSString *)tableName
 {
-    NSString* tableName = NSStringFromClass([data_obj class]);
-    Class objClass = [data_obj class];
-    
     [self.dbQueue inDatabase:^(FMDatabase *db) {
         // 表是否存在
         NSString* sql = [NSString stringWithFormat:@"select count(*) from sqlite_master where type='table' and name='%@'", tableName];
@@ -90,9 +88,9 @@ static NSString *const LH_DBModelColumnType = @"blob";
         
         while ([rs next]) {
             if ([rs intForColumnIndex:0] == 0) {
-                NSArray *property_name_array = [data_obj LH_Primarykey];
-                NSArray *searchKeys = [data_obj LH_SearchKey];
-                [self createTable:db table_name:tableName primaryKey:property_name_array searchKey:searchKeys objClass:objClass];
+                NSArray *property_name_array = [dataObject LH_Primarykey];
+                NSArray *searchKeys = [dataObject LH_SearchKey];
+                [self createTable:db table_name:tableName primaryKey:property_name_array searchKey:searchKeys objClass:[dataObject class]];
                 [rs close];
                 return ;
             }
@@ -182,8 +180,8 @@ static NSString *const LH_DBModelColumnType = @"blob";
 
 #pragma mark - insert record Method
 - (NSString *)getInsertRecordQuery:(id<LH_DBObjectProtocol>)dataObject
+                         tableName:(NSString *)tableName
 {
-    NSString *table_name = NSStringFromClass([dataObject class]);
     NSObject *data_obj = dataObject;
     
     NSMutableArray *fileds = [NSMutableArray array];
@@ -191,7 +189,7 @@ static NSString *const LH_DBModelColumnType = @"blob";
     [fileds addObjectsFromArray:[dataObject LH_Primarykey]];
     [fileds addObjectsFromArray:[dataObject LH_SearchKey]];
     
-    NSMutableString *query = [[NSMutableString alloc] initWithFormat:@"insert or replace into %@ (", table_name];
+    NSMutableString *query = [[NSMutableString alloc] initWithFormat:@"insert or replace into %@ (", tableName];
     NSMutableString *values = [[NSMutableString alloc] initWithString:@") values ("];
     
     for (NSString *property_name in fileds) {
@@ -238,7 +236,7 @@ static NSString *const LH_DBModelColumnType = @"blob";
 }
 
 
-- (NSArray*)excuteSql:(NSString*)sql withClass:(Class)clazz
+- (NSArray *)excuteSql:(NSString*)sql withClass:(Class)clazz
 {
     NSMutableArray *models = [NSMutableArray array];
     
@@ -255,19 +253,17 @@ static NSString *const LH_DBModelColumnType = @"blob";
     return models;
 }
 
-- (NSString *)formatDeleteAllSQLWithClass:(Class)clazz
+- (NSString *)formatDeleteAllSQLWithTableName:(NSString *)tableName
 {
-    NSString *tableName = NSStringFromClass(clazz);
-    
     return [NSString stringWithFormat:@"DELETE FROM %@", tableName];
 }
 
 - (NSString *)formatDeleteSQLWithObjc:(id<LH_DBObjectProtocol>)data_obj
+                            tableName:(NSString *)tableName
 {
     NSMutableString *query = nil;
     
     if (data_obj) {
-        NSString *table_name = NSStringFromClass([data_obj class]);
         NSArray *property_name_array = [data_obj LH_Primarykey];
         NSString *condition = nil;
         if (property_name_array.count > 1) {
@@ -276,7 +272,7 @@ static NSString *const LH_DBModelColumnType = @"blob";
             condition = [self formatSingleConditionSQLWithObjc:data_obj property_name:property_name_array.firstObject];
         }
         
-        query = [[NSMutableString alloc] initWithFormat:@"DELETE FROM %@ WHERE %@", table_name, condition];
+        query = [[NSMutableString alloc] initWithFormat:@"DELETE FROM %@ WHERE %@", tableName, condition];
     }
     
     return query;
@@ -333,8 +329,8 @@ static NSString *const LH_DBModelColumnType = @"blob";
 /// condition -> string
 - (NSString *)formatCondition:(NSDictionary<NSString *, NSString *> *)condition
                     WithClass:(Class<LH_DBObjectProtocol>)clazz
+                    tableName:(NSString *)tableName
 {
-    NSString *tableName = NSStringFromClass(clazz);
     NSMutableString *sql = [NSMutableString stringWithFormat:@"select * from %s", [tableName UTF8String]];
     if (condition.count > 0) {
         [sql appendString:@" where "];
@@ -365,8 +361,8 @@ static NSString *const LH_DBModelColumnType = @"blob";
                               pageIndex:(NSInteger)pageIndex
                                pageSize:(NSInteger)pageSize
                               withClass:(Class<LH_DBObjectProtocol>)clazz
+                              tableName:(NSString *)tableName
 {
-    NSString *tableName = NSStringFromClass(clazz);
     NSString *keyName = [self processReservedWord:orderKey];
     NSString *asc = ascending ? @"asc" : @"desc";
     NSInteger start = (pageIndex-1) * pageSize;
@@ -383,8 +379,8 @@ static NSString *const LH_DBModelColumnType = @"blob";
                           pageIndex:(NSInteger)pageIndex
                            pageSize:(NSInteger)pageSize
                           withClass:(Class<LH_DBObjectProtocol>)clazz
+                          tableName:(NSString *)tableName
 {
-    NSString *tableName = NSStringFromClass(clazz);
     NSString *key1Name = [self processReservedWord:key1];
     NSString *asc1 = ascending1 ? @"asc" : @"desc";
     NSString *key2Name = [self processReservedWord:key2];
