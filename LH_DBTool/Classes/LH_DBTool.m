@@ -69,7 +69,7 @@
            tableName:(NSString *)tableName
 {
     if (obj == nil) {
-        NSLog(@"Warning: deleteObject -> 参数不对");
+        NSLog(@"LH_DBTool Warning: removeObject -> obj=nil");
         return NO;
     }
     
@@ -90,7 +90,7 @@
             isSuccess = [db executeUpdate:query, nil];
             if (!isSuccess) {
                 NSObject *deleteObjc = obj;
-                NSLog(@"deleteObject failed -> obj = %@", [deleteObjc yy_modelDescription]);
+                NSLog(@"LH_DBTool Warning: deleteObject failed -> obj = %@", [deleteObjc yy_modelDescription]);
                 *rollback = YES;
             }
         }];
@@ -117,7 +117,7 @@
                           tableName:(NSString *)tableName
 {
     if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
-        NSLog(@"Warning: 条件查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
+        NSLog(@"LH_DBTool Warning: 条件查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
         return @[];
     }
     
@@ -132,7 +132,7 @@
     BOOL isOkey = YES;
     for (NSString *key in condition.allKeys) {
         if ([availableProperties containsObject:key] == NO) {
-            NSLog(@"Warning: 条件查询 -> key=%@ 不合法", key);
+            NSLog(@"LH_DBTool Warning: 条件查询 -> key=%@ 不合法", key);
             isOkey = NO;
         }
     }
@@ -152,7 +152,7 @@
                           tableName:(NSString *)tableName
 {
     if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
-        NSLog(@"Warning: 条件查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
+        NSLog(@"LH_DBTool Warning: 条件查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
         return @[];
     }
     
@@ -164,13 +164,14 @@
     [availableProperties addObjectsFromArray:[obj LH_Primarykey]];
     [availableProperties addObjectsFromArray:[obj LH_SearchKey]];
     
-    if ([availableProperties containsObject:conditionKey] == NO) {
-        NSLog(@"Warning: 条件查询 -> key=%@ 不合法", conditionKey);
+    if (conditionKey && conditionValue && [availableProperties containsObject:conditionKey]) {
+        NSString *sql = [dbCore formatCondition:@{conditionKey : conditionValue} WithClass:clazz tableName:tableName];
+        return [dbCore excuteSql:sql withClass:clazz];
+    }
+    else {
+        NSLog(@"LH_DBTool Warning: 条件查询 -> key=%@ 不合法", conditionKey);
         return @[];
     }
-    
-    NSString *sql = [dbCore formatCondition:@{conditionKey : conditionValue} WithClass:clazz tableName:tableName];
-    return [dbCore excuteSql:sql withClass:clazz];
 }
 
 
@@ -184,17 +185,17 @@
                               tableName:(NSString *)tableName
 {
     if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
-        NSLog(@"Warning: 分页查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
+        NSLog(@"LH_DBTool Warning: 分页查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
         return @[];
     }
     
     if (pageIndex < 1) {
-        NSLog(@"Warning: 分页查询 pageIndex[%zd] 参数不合法", pageIndex);
+        NSLog(@"LH_DBTool Warning: 分页查询 pageIndex[%zd] 参数不合法", pageIndex);
         return @[];
     }
     
     if (pageSize < 1 || pageSize > 100) {
-        NSLog(@"Warning: 分页查询 pageSize[%zd] 参数不合法", pageSize);
+        NSLog(@"LH_DBTool Warning: 分页查询 pageSize[%zd] 参数不合法", pageSize);
         return @[];
     }
     
@@ -207,7 +208,7 @@
     [availableProperties addObjectsFromArray:[obj LH_SearchKey]];
     
     if ([availableProperties containsObject:sortKey] == NO) {
-        NSLog(@"Warning: 分页查询 -> sortKey=%@ 不合法", sortKey);
+        NSLog(@"LH_DBTool Warning: 分页查询 -> sortKey=%@ 不合法", sortKey);
         return @[];
     }
     
@@ -222,7 +223,7 @@
                        tableName:(NSString *)tableName
 {
     if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
-        NSLog(@"Warning: 全部查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
+        NSLog(@"LH_DBTool Warning: 全部查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
         return @[];
     }
     
@@ -335,7 +336,7 @@
 - (void)setDefaultDBFileName:(NSString *)dbName
 {
     if (self.dbPath == nil) {
-        NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+        NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
         return;
     }
 
@@ -372,6 +373,11 @@
     toCustomTable:(NSString * _Nullable)tableName
          inDBName:(NSString * _Nullable)dbName
 {
+    if (obj == nil) {
+        NSLog(@"LH_DBTool Error: addObject == nil");
+        return NO;
+    }
+    
     if (tableName == nil) {
         tableName = NSStringFromClass([obj class]);
     }
@@ -380,7 +386,7 @@
     if (dbName == nil) {
         dbCore = self.defaultCore;
         if (self.defaultCore == nil) {
-            NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+            NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
         }
     }
     else {
@@ -419,6 +425,11 @@
          toCustomTable:(NSString * _Nullable)tableName
               inDBName:(NSString * _Nullable)dbName
 {
+    if (objs == nil || objs.count == 0) {
+        NSLog(@"LH_DBTool Error: addObjectArray 空数组!");
+        return NO;
+    }
+    
     if (tableName == nil) {
         tableName = NSStringFromClass([objs.firstObject class]);
     }
@@ -427,7 +438,7 @@
     if (dbName == nil) {
         dbCore = self.defaultCore;
         if (self.defaultCore == nil) {
-            NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+            NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
         }
     }
     else {
@@ -470,6 +481,11 @@
      fromCustomTable:(NSString * _Nullable)tableName
             inDBName:(NSString * _Nullable)dbName
 {
+    if (obj == nil) {
+        NSLog(@"LH_DBTool Error: deleteObject == nil");
+        return NO;
+    }
+    
     if (tableName == nil) {
         tableName = NSStringFromClass([obj class]);
     }
@@ -519,6 +535,12 @@
           fromCustomTable:(NSString * _Nullable)tableName
                  inDBName:(NSString * _Nullable)dbName
 {
+    if (objs == nil || objs.count == 0) {
+        NSLog(@"LH_DBTool Error: deleteArray 为空!");
+        return NO;
+    }
+    
+    
     if (tableName == nil) {
         tableName = NSStringFromClass([objs.firstObject class]);
     }
@@ -527,7 +549,7 @@
     if (dbName == nil) {
         dbCore = self.defaultCore;
         if (self.defaultCore == nil) {
-            NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+            NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
         }
     }
     else {
@@ -555,7 +577,7 @@
 - (BOOL)deleteAllObjectsFromClass:(Class)clazz
                   fromCustomTable:(NSString *)tableName
 {
-    return [self deleteAllObjectsFromClass:clazz fromCustomTable:nil InDBName:nil];
+    return [self deleteAllObjectsFromClass:clazz fromCustomTable:tableName InDBName:nil];
 }
 
 /// 删除指定表中的所有数据
@@ -574,7 +596,7 @@
     if (dbName == nil) {
         dbCore = self.defaultCore;
         if (self.defaultCore == nil) {
-            NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+            NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
         }
     }
     else {
@@ -595,11 +617,16 @@
 - (BOOL)removeTable:(NSString *)tableName
            inDBName:(NSString * _Nullable)dbName
 {
+    if (tableName == nil || tableName.length == 0) {
+        NSLog(@"LH_DBTool Error: removeTable -> tableName == nil");
+        return NO;
+    }
+    
     LH_DBCore *dbCore = nil;
     if (dbName == nil) {
         dbCore = self.defaultCore;
         if (self.defaultCore == nil) {
-            NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+            NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
         }
     }
     else {
@@ -647,7 +674,7 @@
     if (dbName == nil) {
         dbCore = self.defaultCore;
         if (self.defaultCore == nil) {
-            NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+            NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
         }
     }
     else {
@@ -707,7 +734,7 @@
     if (dbName == nil) {
         dbCore = self.defaultCore;
         if (self.defaultCore == nil) {
-            NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+            NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
         }
     }
     else {
@@ -761,7 +788,7 @@
     if (dbName == nil) {
         dbCore = self.defaultCore;
         if (self.defaultCore == nil) {
-            NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+            NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
         }
     }
     else {
@@ -834,7 +861,7 @@
     if (dbName == nil) {
         dbCore = self.defaultCore;
         if (self.defaultCore == nil) {
-            NSLog(@"LH_DBTool 请先调用 startInDBPath: 方法");
+            NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
         }
     }
     else {
