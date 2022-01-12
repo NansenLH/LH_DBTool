@@ -25,12 +25,22 @@ NS_ASSUME_NONNULL_BEGIN
 /// 必须重新调用 start 方法之后才可重新使用增删改查
 - (void)stopDB;
 
-
-
 /// 设置默认的数据库文件名, 不设置,默认为 LHDB.db. 设置之后,所有的默认增删改查都会在新数据库中执行
 - (void)setDefaultDBFileName:(NSString *)dbName;
 
 
+#pragma mark - ======== 表操作 ========
+/// 表的创建会默认处理.
+
+
+/// 删除指定数据表
+/// @param tableName 遵循<LH_DBObjectProtocol>的类名或者是自定义的表名
+/// @param dbName 数据库文件名,不用加后缀. 
+- (BOOL)removeTable:(NSString *)tableName
+           inDBName:(NSString * _Nullable)dbName;
+
+
+#pragma mark - ======== 数据操作 ========
 #pragma mark ---- 增,改 ----
 /// 增加或者更新一条数据
 /// 默认数据库, 默认使用类名作为表名
@@ -135,11 +145,7 @@ NS_ASSUME_NONNULL_BEGIN
                          InDBName:(NSString * _Nullable)dbName;
 
 
-/// 删除指定数据表
-/// @param tableName 遵循<LH_DBObjectProtocol>的类名
-/// @param dbName 数据库文件名,不用加后缀. 会用该文件名创建 dbName.db 的数据库文件
-- (BOOL)removeTable:(NSString *)tableName
-           inDBName:(NSString * _Nullable)dbName;
+
 
                         
 #pragma mark ---- 查 ----

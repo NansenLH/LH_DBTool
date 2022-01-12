@@ -30,216 +30,13 @@
     return _dbDict;
 }
 
-- (BOOL)saveObject:(id<LH_DBObjectProtocol>)obj
-            byCore:(LH_DBCore *)database
-         tableName:(NSString *)tableName
-{
-    [database tableCheck:obj tableName:tableName];
-    
-    NSString *query = [database getInsertRecordQuery:obj tableName:tableName];
-    BOOL isSuccess = [database.dataBase executeUpdate:query, nil];
-    return isSuccess;
-}
-
-- (BOOL)saveObjects:(NSArray<id<LH_DBObjectProtocol>> *)objs
-             byCore:(LH_DBCore *)dataBase
-          tableName:(NSString *)tableName
-{
-    [dataBase tableCheck:objs.firstObject tableName:tableName];
-    
-    __block NSMutableArray *array = [NSMutableArray array];
-    [dataBase.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
-        for (id<LH_DBObjectProtocol> obj in objs) {
-            NSString *query = [dataBase getInsertRecordQuery:obj tableName:tableName];
-            BOOL isSuccess = [db executeUpdate:query, nil];
-            if (isSuccess == NO) {
-                NSObject *errorObj = obj;
-                NSLog(@"add obj failed -> obj = %@", [errorObj yy_modelDescription]);
-                [array addObject:obj];
-                *rollback = YES;
-            }
-        }
-    }];
-    return !(array.count > 0);
-}
-
-
-- (BOOL)removeObject:(id<LH_DBObjectProtocol>)obj
-              byCore:(LH_DBCore *)dbCore
-           tableName:(NSString *)tableName
-{
-    if (obj == nil) {
-        NSLog(@"LH_DBTool Warning: removeObject -> obj=nil");
-        return NO;
-    }
-    
-    [dbCore tableCheck:obj tableName:tableName];
-    return [self removeObjects:@[obj] byCore:dbCore tableName:tableName];
-}
-
-- (BOOL)removeObjects:(NSArray<id<LH_DBObjectProtocol>> *)objs
-               byCore:(LH_DBCore *)dbCore
-            tableName:(NSString *)tableName
-{
-    [dbCore tableCheck:objs.firstObject tableName:tableName];
-    
-    __block BOOL isSuccess = NO;
-    [dbCore.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
-        [objs enumerateObjectsUsingBlock:^(id<LH_DBObjectProtocol>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSString *query = [dbCore formatDeleteSQLWithObjc:obj tableName:tableName];
-            isSuccess = [db executeUpdate:query, nil];
-            if (!isSuccess) {
-                NSObject *deleteObjc = obj;
-                NSLog(@"LH_DBTool Warning: deleteObject failed -> obj = %@", [deleteObjc yy_modelDescription]);
-                *rollback = YES;
-            }
-        }];
-    }];
-    return isSuccess;
-}
-
-- (BOOL)removeAllObjects:(Class)clazz
-                  byCore:(LH_DBCore *)dbCore
-               tableName:(NSString *)tableName
-{
-    id<LH_DBObjectProtocol> obj = [clazz new];
-    [dbCore tableCheck:obj tableName:tableName];
-    
-    NSString *query = [dbCore formatDeleteAllSQLWithTableName:tableName];
-    return [dbCore.dataBase executeUpdate:query, nil];
-}
-
-
-/// 根据条件获取对应的数据
-- (NSArray *)searchObjectsWithClass:(Class)clazz
-                          condition:(NSDictionary<NSString *, NSString *> *)condition
-                             byCore:(LH_DBCore *)dbCore
-                          tableName:(NSString *)tableName
-{
-    if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
-        NSLog(@"LH_DBTool Warning: 条件查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
-        return @[];
-    }
-    
-    id<LH_DBObjectProtocol> obj = [clazz new];
-    
-    [dbCore tableCheck:obj tableName:tableName];
-    
-    NSMutableArray *availableProperties = [NSMutableArray array];
-    [availableProperties addObjectsFromArray:[obj LH_Primarykey]];
-    [availableProperties addObjectsFromArray:[obj LH_SearchKey]];
-    
-    BOOL isOkey = YES;
-    for (NSString *key in condition.allKeys) {
-        if ([availableProperties containsObject:key] == NO) {
-            NSLog(@"LH_DBTool Warning: 条件查询 -> key=%@ 不合法", key);
-            isOkey = NO;
-        }
-    }
-    if (isOkey == NO) {
-        return @[];
-    }
-    
-    NSString *sql = [dbCore formatCondition:condition WithClass:clazz tableName:tableName];
-    return [dbCore excuteSql:sql withClass:clazz];
-}
-
-/// 根据限定条件获取数据
-- (NSArray *)searchObjectsWithClass:(Class)clazz
-                       conditionKey:(NSString *)conditionKey
-                     conditionValue:(NSString *)conditionValue
-                             byCore:(LH_DBCore *)dbCore
-                          tableName:(NSString *)tableName
-{
-    if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
-        NSLog(@"LH_DBTool Warning: 条件查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
-        return @[];
-    }
-    
-    id<LH_DBObjectProtocol> obj = [clazz new];
-    
-    [dbCore tableCheck:obj tableName:tableName];
-
-    NSMutableArray *availableProperties = [NSMutableArray array];
-    [availableProperties addObjectsFromArray:[obj LH_Primarykey]];
-    [availableProperties addObjectsFromArray:[obj LH_SearchKey]];
-    
-    if (conditionKey && conditionValue && [availableProperties containsObject:conditionKey]) {
-        NSString *sql = [dbCore formatCondition:@{conditionKey : conditionValue} WithClass:clazz tableName:tableName];
-        return [dbCore excuteSql:sql withClass:clazz];
-    }
-    else {
-        NSLog(@"LH_DBTool Warning: 条件查询 -> key=%@ 不合法", conditionKey);
-        return @[];
-    }
-}
-
-
-/// 根据限定条件获取数据
-- (NSArray *)searchPageObjectsWithClass:(Class)clazz
-                              sortByKey:(NSString *)sortKey
-                              ascending:(BOOL)ascending
-                              pageIndex:(NSInteger)pageIndex
-                               pageSize:(NSInteger)pageSize
-                                 byCore:(LH_DBCore *)dbCore
-                              tableName:(NSString *)tableName
-{
-    if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
-        NSLog(@"LH_DBTool Warning: 分页查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
-        return @[];
-    }
-    
-    if (pageIndex < 1) {
-        NSLog(@"LH_DBTool Warning: 分页查询 pageIndex[%zd] 参数不合法", pageIndex);
-        return @[];
-    }
-    
-    if (pageSize < 1 || pageSize > 100) {
-        NSLog(@"LH_DBTool Warning: 分页查询 pageSize[%zd] 参数不合法", pageSize);
-        return @[];
-    }
-    
-    id<LH_DBObjectProtocol> obj = [clazz new];
-    
-    [dbCore tableCheck:obj tableName:tableName];
-    
-    NSMutableArray *availableProperties = [NSMutableArray array];
-    [availableProperties addObjectsFromArray:[obj LH_Primarykey]];
-    [availableProperties addObjectsFromArray:[obj LH_SearchKey]];
-    
-    if ([availableProperties containsObject:sortKey] == NO) {
-        NSLog(@"LH_DBTool Warning: 分页查询 -> sortKey=%@ 不合法", sortKey);
-        return @[];
-    }
-    
-    NSString *sql = [dbCore pageSearchSQLWithOrderKey:sortKey ascending:ascending pageIndex:pageIndex pageSize:pageSize withClass:clazz tableName:tableName];
-    return [dbCore excuteSql:sql withClass:clazz];
-}
-
-
-/// 获取数据表中的全部数据
-- (NSArray *)allObjectsWithClass:(Class)clazz
-                          byCore:(LH_DBCore *)dbCore
-                       tableName:(NSString *)tableName
-{
-    if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
-        NSLog(@"LH_DBTool Warning: 全部查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
-        return @[];
-    }
-    
-    id<LH_DBObjectProtocol> obj = [clazz new];
-    
-    [dbCore tableCheck:obj tableName:tableName];
-    NSString *sql = [NSString stringWithFormat:@"select * from %s", [tableName UTF8String]];
-    return [dbCore excuteSql:sql withClass:clazz];
-}
 
 
 /// 删除数据表
 - (BOOL)deleteTable:(NSString *)tableName
              byCore:(LH_DBCore *)dbCore
 {
-    __block BOOL tf = NO;
+    BOOL tf = NO;
     NSString *sql = [@"DROP TABLE " stringByAppendingString:tableName];
     tf = [dbCore.dataBase executeUpdate:sql,nil];
     return tf;
@@ -346,6 +143,46 @@
 }
 
 
+#pragma mark - ======== 表操作 ========
+/// 删除指定数据表
+/// @param tableName 遵循<LH_DBObjectProtocol>的类名
+/// @param dbName 数据库文件名,不用加后缀. 会用该文件名创建 dbName.db 的数据库文件
+- (BOOL)removeTable:(NSString *)tableName
+           inDBName:(NSString * _Nullable)dbName
+{
+    if (tableName == nil || tableName.length == 0) {
+        NSLog(@"LH_DBTool Error: removeTable -> tableName == nil");
+        return NO;
+    }
+    
+    LH_DBCore *dbCore = nil;
+    if (dbName == nil) {
+        dbCore = self.defaultCore;
+        if (self.defaultCore == nil) {
+            NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
+        }
+    }
+    else {
+        NSString *name = [NSString stringWithFormat:@"%@.db", dbName];
+        NSString *dbFilePath = [self.dbPath stringByAppendingPathComponent:name];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:dbFilePath] == NO) {
+            NSLog(@"LH_DBTool removeTable:inDBName: %@ 数据库文件不存在", dbName);
+            return YES;
+        }
+        
+        dbCore = [self getDBCoreByDBName:dbName];
+    }
+
+    if (dbCore == nil) {
+        return NO;
+    }
+    
+    return [self deleteTable:tableName byCore:dbCore];
+}
+
+
+
+#pragma mark - ======== 数据操作 ========
 #pragma mark ---- 增,改 ----
 /// 增加或者更新一条数据
 /// 默认数据库, 默认使用类名作为表名
@@ -611,34 +448,6 @@
 }
 
 
-/// 删除指定数据表
-/// @param tableName 遵循<LH_DBObjectProtocol>的类名
-/// @param dbName 数据库文件名,不用加后缀. 会用该文件名创建 dbName.db 的数据库文件
-- (BOOL)removeTable:(NSString *)tableName
-           inDBName:(NSString * _Nullable)dbName
-{
-    if (tableName == nil || tableName.length == 0) {
-        NSLog(@"LH_DBTool Error: removeTable -> tableName == nil");
-        return NO;
-    }
-    
-    LH_DBCore *dbCore = nil;
-    if (dbName == nil) {
-        dbCore = self.defaultCore;
-        if (self.defaultCore == nil) {
-            NSLog(@"LH_DBTool Error: 请先调用 startInDBPath: 方法");
-        }
-    }
-    else {
-        dbCore = [self getDBCoreByDBName:dbName];
-    }
-
-    if (dbCore == nil) {
-        return NO;
-    }
-    
-    return [self deleteTable:tableName byCore:dbCore];
-}
 
                         
 #pragma mark ---- 查 ----
@@ -874,6 +683,214 @@
     
     return [self searchPageObjectsWithClass:clazz sortByKey:sortKey ascending:ascending pageIndex:pageIndex pageSize:pageSize byCore:dbCore tableName:tableName];
 }
+
+
+
+- (BOOL)saveObject:(id<LH_DBObjectProtocol>)obj
+            byCore:(LH_DBCore *)database
+         tableName:(NSString *)tableName
+{
+    [database tableCheck:obj tableName:tableName];
+    
+    NSString *query = [database getInsertRecordQuery:obj tableName:tableName];
+    BOOL isSuccess = [database.dataBase executeUpdate:query, nil];
+    return isSuccess;
+}
+
+- (BOOL)saveObjects:(NSArray<id<LH_DBObjectProtocol>> *)objs
+             byCore:(LH_DBCore *)dataBase
+          tableName:(NSString *)tableName
+{
+    [dataBase tableCheck:objs.firstObject tableName:tableName];
+    
+    __block NSMutableArray *array = [NSMutableArray array];
+    [dataBase.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
+        for (id<LH_DBObjectProtocol> obj in objs) {
+            NSString *query = [dataBase getInsertRecordQuery:obj tableName:tableName];
+            BOOL isSuccess = [db executeUpdate:query, nil];
+            if (isSuccess == NO) {
+                NSObject *errorObj = obj;
+                NSLog(@"add obj failed -> obj = %@", [errorObj yy_modelDescription]);
+                [array addObject:obj];
+                *rollback = YES;
+            }
+        }
+    }];
+    return !(array.count > 0);
+}
+
+
+- (BOOL)removeObject:(id<LH_DBObjectProtocol>)obj
+              byCore:(LH_DBCore *)dbCore
+           tableName:(NSString *)tableName
+{
+    if (obj == nil) {
+        NSLog(@"LH_DBTool Warning: removeObject -> obj=nil");
+        return NO;
+    }
+    
+    [dbCore tableCheck:obj tableName:tableName];
+    return [self removeObjects:@[obj] byCore:dbCore tableName:tableName];
+}
+
+- (BOOL)removeObjects:(NSArray<id<LH_DBObjectProtocol>> *)objs
+               byCore:(LH_DBCore *)dbCore
+            tableName:(NSString *)tableName
+{
+    [dbCore tableCheck:objs.firstObject tableName:tableName];
+    
+    __block BOOL isSuccess = NO;
+    [dbCore.dbQueue inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollback) {
+        [objs enumerateObjectsUsingBlock:^(id<LH_DBObjectProtocol>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *query = [dbCore formatDeleteSQLWithObjc:obj tableName:tableName];
+            isSuccess = [db executeUpdate:query, nil];
+            if (!isSuccess) {
+                NSObject *deleteObjc = obj;
+                NSLog(@"LH_DBTool Warning: deleteObject failed -> obj = %@", [deleteObjc yy_modelDescription]);
+                *rollback = YES;
+            }
+        }];
+    }];
+    return isSuccess;
+}
+
+- (BOOL)removeAllObjects:(Class)clazz
+                  byCore:(LH_DBCore *)dbCore
+               tableName:(NSString *)tableName
+{
+    id<LH_DBObjectProtocol> obj = [clazz new];
+    [dbCore tableCheck:obj tableName:tableName];
+    
+    NSString *query = [dbCore formatDeleteAllSQLWithTableName:tableName];
+    return [dbCore.dataBase executeUpdate:query, nil];
+}
+
+
+/// 根据条件获取对应的数据
+- (NSArray *)searchObjectsWithClass:(Class)clazz
+                          condition:(NSDictionary<NSString *, NSString *> *)condition
+                             byCore:(LH_DBCore *)dbCore
+                          tableName:(NSString *)tableName
+{
+    if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
+        NSLog(@"LH_DBTool Warning: 条件查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
+        return @[];
+    }
+    
+    id<LH_DBObjectProtocol> obj = [clazz new];
+    
+    [dbCore tableCheck:obj tableName:tableName];
+    
+    NSMutableArray *availableProperties = [NSMutableArray array];
+    [availableProperties addObjectsFromArray:[obj LH_Primarykey]];
+    [availableProperties addObjectsFromArray:[obj LH_SearchKey]];
+    
+    BOOL isOkey = YES;
+    for (NSString *key in condition.allKeys) {
+        if ([availableProperties containsObject:key] == NO) {
+            NSLog(@"LH_DBTool Warning: 条件查询 -> key=%@ 不合法", key);
+            isOkey = NO;
+        }
+    }
+    if (isOkey == NO) {
+        return @[];
+    }
+    
+    NSString *sql = [dbCore formatCondition:condition WithClass:clazz tableName:tableName];
+    return [dbCore excuteSql:sql withClass:clazz];
+}
+
+/// 根据限定条件获取数据
+- (NSArray *)searchObjectsWithClass:(Class)clazz
+                       conditionKey:(NSString *)conditionKey
+                     conditionValue:(NSString *)conditionValue
+                             byCore:(LH_DBCore *)dbCore
+                          tableName:(NSString *)tableName
+{
+    if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
+        NSLog(@"LH_DBTool Warning: 条件查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
+        return @[];
+    }
+    
+    id<LH_DBObjectProtocol> obj = [clazz new];
+    
+    [dbCore tableCheck:obj tableName:tableName];
+
+    NSMutableArray *availableProperties = [NSMutableArray array];
+    [availableProperties addObjectsFromArray:[obj LH_Primarykey]];
+    [availableProperties addObjectsFromArray:[obj LH_SearchKey]];
+    
+    if (conditionKey && conditionValue && [availableProperties containsObject:conditionKey]) {
+        NSString *sql = [dbCore formatCondition:@{conditionKey : conditionValue} WithClass:clazz tableName:tableName];
+        return [dbCore excuteSql:sql withClass:clazz];
+    }
+    else {
+        NSLog(@"LH_DBTool Warning: 条件查询 -> key=%@ 不合法", conditionKey);
+        return @[];
+    }
+}
+
+
+/// 根据限定条件获取数据
+- (NSArray *)searchPageObjectsWithClass:(Class)clazz
+                              sortByKey:(NSString *)sortKey
+                              ascending:(BOOL)ascending
+                              pageIndex:(NSInteger)pageIndex
+                               pageSize:(NSInteger)pageSize
+                                 byCore:(LH_DBCore *)dbCore
+                              tableName:(NSString *)tableName
+{
+    if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
+        NSLog(@"LH_DBTool Warning: 分页查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
+        return @[];
+    }
+    
+    if (pageIndex < 1) {
+        NSLog(@"LH_DBTool Warning: 分页查询 pageIndex[%zd] 参数不合法", pageIndex);
+        return @[];
+    }
+    
+    if (pageSize < 1 || pageSize > 100) {
+        NSLog(@"LH_DBTool Warning: 分页查询 pageSize[%zd] 参数不合法", pageSize);
+        return @[];
+    }
+    
+    id<LH_DBObjectProtocol> obj = [clazz new];
+    
+    [dbCore tableCheck:obj tableName:tableName];
+    
+    NSMutableArray *availableProperties = [NSMutableArray array];
+    [availableProperties addObjectsFromArray:[obj LH_Primarykey]];
+    [availableProperties addObjectsFromArray:[obj LH_SearchKey]];
+    
+    if ([availableProperties containsObject:sortKey] == NO) {
+        NSLog(@"LH_DBTool Warning: 分页查询 -> sortKey=%@ 不合法", sortKey);
+        return @[];
+    }
+    
+    NSString *sql = [dbCore pageSearchSQLWithOrderKey:sortKey ascending:ascending pageIndex:pageIndex pageSize:pageSize withClass:clazz tableName:tableName];
+    return [dbCore excuteSql:sql withClass:clazz];
+}
+
+
+/// 获取数据表中的全部数据
+- (NSArray *)allObjectsWithClass:(Class)clazz
+                          byCore:(LH_DBCore *)dbCore
+                       tableName:(NSString *)tableName
+{
+    if (class_conformsToProtocol(clazz, @protocol(LH_DBObjectProtocol)) == NO) {
+        NSLog(@"LH_DBTool Warning: 全部查询 -> %@ 未遵循<LH_DBObjectProtocol>", NSStringFromClass(clazz));
+        return @[];
+    }
+    
+    id<LH_DBObjectProtocol> obj = [clazz new];
+    
+    [dbCore tableCheck:obj tableName:tableName];
+    NSString *sql = [NSString stringWithFormat:@"select * from %s", [tableName UTF8String]];
+    return [dbCore excuteSql:sql withClass:clazz];
+}
+
+
 
 
 

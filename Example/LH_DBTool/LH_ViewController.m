@@ -40,6 +40,7 @@ static NSString *const DBName2 = @"222";
     
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
     [[LH_DBTool defaultTool] startInDBPath:docDir];
+    [[LH_DBTool defaultTool] deleteAllObjectsFromClass:[TestModel class]];
     
     [self.view addSubview:self.tableView];
     
@@ -121,7 +122,7 @@ static NSString *const DBName2 = @"222";
     
     
     TestModel *m = self.dataArray[indexPath.row];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@; %zd; %d", m.name, m.page, m.count];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@; %zd; %d - %@", m.name, m.page, m.count, m.subModel.identifiy];
     
     return cell;
 }
@@ -135,11 +136,31 @@ static NSString *const DBName2 = @"222";
 - (IBAction)addAction:(id)sender
 {
     NSMutableArray *arr = [NSMutableArray array];
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 30; i++) {
         TestModel *m1 = [[TestModel alloc] init];
         m1.name = [NSString stringWithFormat:@"%@ - %d", self.dbName, i];
         m1.page = i;
         m1.count = 200;
+        
+        Shadow *shadow = [[Shadow alloc] init];
+        shadow.length = 10;
+        shadow.height = 5.2f;
+        shadow.size = CGSizeMake(20, 20);
+        shadow.rect = CGRectMake(0, 0, 50, 50);
+        m1.shadows = @[shadow];
+        
+        TestSubModel *subModel = [[TestSubModel alloc] init];
+        subModel.name = [NSString stringWithFormat:@"subModel-%d", i];
+        subModel.birthday = [NSDate date];
+        subModel.address = @"apple";
+        subModel.time = @"1920";
+        subModel.identifiy = @(i).stringValue;
+        subModel.attributeStr = [[NSAttributedString alloc] initWithString:@"attr" attributes:@{
+            NSFontAttributeName : [UIFont boldSystemFontOfSize:32],
+            NSForegroundColorAttributeName : [UIColor redColor]
+        }];
+        m1.subModel = subModel;
+        
         [arr addObject:m1];
     }
     
@@ -168,6 +189,7 @@ static NSString *const DBName2 = @"222";
         m1.name = [NSString stringWithFormat:@"%@ - %d", self.dbName, i];
         m1.page = i;
         m1.count = i+100;
+        
         [arr addObject:m1];
     }
     
@@ -211,10 +233,18 @@ static NSString *const DBName2 = @"222";
     [self.dataArray removeAllObjects];
     if (self.segIndex == 0) {
         [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchObjectsFromClass:[TestModel class] sortByKey:TestModel_Key_Page ascending:NO pageIndex:2 pageSize:3]];
+        
+        NSArray *models = [[LH_DBTool defaultTool] searchObjectsFromClass:[TestModel class] conditionKey:TestModel_Key_Page conditionValue:@"5"];
+        NSLog(@"models = %@", models);
+        
+        
     }
     else {
         [self.dataArray addObjectsFromArray:[[LH_DBTool defaultTool] searchObjectsFromClass:[TestModel class] conditionKey:TestModel_SearchKey_Count conditionValue:@"200" customTable:nil inDBName:self.dbName]];
     }
+    
+    
+    
     
     [self.tableView reloadData];
 }

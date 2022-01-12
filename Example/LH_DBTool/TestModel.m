@@ -12,8 +12,55 @@ NSString * const TestModel_Key_Name = @"name";
 NSString * const TestModel_Key_Page = @"page";
 NSString * const TestModel_SearchKey_Count = @"count";
 
+NSString * const TestSubModel_Key_identifiy = @"identifiy";
 
 @implementation TestSubModel
+
+- (NSString *)description {
+    return [self yy_modelDescription];
+}
+
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [self yy_modelEncodeWithCoder:aCoder];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    return [self yy_modelInitWithCoder:aDecoder];
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    return [self yy_modelCopy];
+}
+
+- (NSUInteger)hash {
+    return [self yy_modelHash];
+}
+
+- (BOOL)isEqual:(id)object {
+    return [self yy_modelIsEqual:object];
+}
+
++ (NSDictionary *)modelCustomPropertyMapper
+{
+    //前面是model中的名字,后面是json中的名字
+    return @{
+       
+    };
+}
+
+
+- (nonnull NSArray<NSString *> *)LH_Primarykey {
+    return @[TestSubModel_Key_identifiy];
+}
+
+- (nonnull NSArray<NSString *> *)LH_SearchKey {
+    return @[];
+}
+
 
 @end
 
